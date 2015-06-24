@@ -3,58 +3,31 @@
 #include <glfw3.h>
 #include <iostream>
 #include "Shader.h"
+#include <SOIL.h>
 
+void Initialization();
 std::string BaseDirectory();
+std::string ShaderDirectory();
+std::string ImageDirectory();
 void ErrorCallback(int error, const char* description);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
-bool g_wireframeMode = false;
+bool wireframeMode = false;
+int exitCode = 0;
+GLFWwindow* window;
 
 int main()
 {
-	glfwSetErrorCallback(ErrorCallback);
+	Initialization();
 
-	if (!glfwInit())
+	if (exitCode != 0)
 	{
-		std::cerr << "ERROR::MAIN::MAIN::GLFW_INIT_FAILED\n" << std::endl;
-	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Mac OS X compatibility
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Zephyr", nullptr, nullptr);
-	if (window == nullptr)
-	{
-		std::cerr << "ERROR::MAIN::MAIN::CREATE_WINDOW_FAILED\n" << std::endl;
 		glfwTerminate();
-		return -1;
+		return exitCode;
 	}
-
-	glfwMakeContextCurrent(window);
-
-	glewExperimental = GL_TRUE;
-	GLenum error = glewInit();
-
-	if (error != GLEW_OK)
-	{
-		std::cerr << "ERROR::MAIN::MAIN::GLEW_INIT_FAILED\n" << glewGetErrorString(error) << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	glViewport(0, 0, 800, 600);
-
-	// Set callback functions
-	glfwSetKeyCallback(window, KeyCallback);
-
-	// Set clear color
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 	// Build and compile shaders
-	Shader shader((BaseDirectory() + "Resources\\Shaders\\default.vert").c_str(), (BaseDirectory() + "Resources\\Shaders\\default.frag").c_str());
+	Shader shader((ShaderDirectory() + "default.vert").c_str(), (ShaderDirectory() + "default.frag").c_str());
 
 	// Vertex data and buffer objects
 	GLfloat vertices[] =
@@ -67,6 +40,13 @@ int main()
 			 0.5f,  0.5f, 0.0f,		0.2f, 0.5f, 1.0f
 	};
 
+	GLfloat texCoords[] =
+	{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.5f, 1.0f
+	};
+
 	GLuint indices[] =
 	{
 		0, 1, 2,	// First Triangle
@@ -74,8 +54,16 @@ int main()
 		2, 1, 4		// Third Triangle
 	};
 
-	GLuint IBO, VBO, VAO;
+	// Texture loading
+	int width, height;
+	unsigned char* image = SOIL_load_image((ImageDirectory() + "container.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
 
+	GLuint texture;
+	glGenTextures(1, &texture);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	GLuint IBO, VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &IBO);
 	glGenBuffers(1, &VBO);
@@ -124,7 +112,52 @@ int main()
 	glDeleteBuffers(1, &IBO);
 	glDeleteBuffers(1, &VBO);
 	glfwTerminate();
-	return 0;
+	return exitCode;
+}
+
+void Initialization()
+{
+	glfwSetErrorCallback(ErrorCallback);
+
+	if (!glfwInit())
+	{
+		std::cerr << "ERROR::MAIN::MAIN::GLFW_INIT_FAILED\n" << std::endl;
+		exitCode = -1;
+	}
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Mac OS X compatibility
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+	window = glfwCreateWindow(800, 600, "Zephyr", nullptr, nullptr);
+	if (window == nullptr)
+	{
+		std::cerr << "ERROR::MAIN::MAIN::CREATE_WINDOW_FAILED\n" << std::endl;
+		glfwTerminate();
+		exitCode = -1;
+	}
+
+	glfwMakeContextCurrent(window);
+
+	glewExperimental = GL_TRUE;
+	GLenum error = glewInit();
+
+	if (error != GLEW_OK)
+	{
+		std::cerr << "ERROR::MAIN::MAIN::GLEW_INIT_FAILED\n" << glewGetErrorString(error) << std::endl;
+		glfwTerminate();
+		exitCode = -1;
+	}
+
+	glViewport(0, 0, 800, 600);
+
+	// Set callback functions
+	glfwSetKeyCallback(window, KeyCallback);
+
+	// Set clear color
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 }
 
 std::string BaseDirectory()
@@ -140,9 +173,20 @@ std::string BaseDirectory()
 	return "";
 }
 
+std::string ShaderDirectory()
+{
+	return (BaseDirectory() + "Resources\\Shaders\\");
+}
+
+std::string ImageDirectory()
+{
+	return (BaseDirectory() + "Resources\\Images\\");
+}
+
 void ErrorCallback(int error, const char* description)
 {
 	std::cerr << "ERROR::GLFW_ERROR\n " << error << " - " << description << std::endl;
+	exitCode = -1;
 }
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -154,8 +198,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 	if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
 	{
-		g_wireframeMode = !g_wireframeMode;
-		if (g_wireframeMode)
+		wireframeMode = !wireframeMode;
+		if (wireframeMode)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
