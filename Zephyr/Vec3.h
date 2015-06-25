@@ -10,6 +10,38 @@ public:
 	Vec3(double x, double y, double z);
 	virtual ~Vec3();
 
+	// Static methods
+	static Vec3 Up();
+	static Vec3 Down();
+	static Vec3 Left();
+	static Vec3 Right();
+	static Vec3 Forward();
+	static Vec3 Backward();
+
+	double Length();
+	double Dot(Vec3 vec);
+	Vec3 Cross(Vec3 vec);
+	Vec3 Normalize();
+	std::string ToString();
+
+	// Operator Overloads
+	Vec3 operator+(Vec3 vec);
+	Vec3 operator+(double scalar);
+	Vec3& operator+=(Vec3 vec);
+	Vec3& operator+=(double scalar);
+	Vec3 operator-(Vec3 vec);
+	Vec3 operator-(double scalar);
+	Vec3& operator-=(Vec3 vec);
+	Vec3& operator-=(double scalar);
+	Vec3 operator*(Vec3 vec);
+	Vec3 operator*(double scalar);
+	Vec3& operator*=(Vec3 vec);
+	Vec3& operator*=(double scalar);
+	Vec3 operator/(Vec3 vec);
+	Vec3 operator/(double scalar);
+	Vec3& operator/=(Vec3 vec);
+	Vec3& operator/=(double scalar);
+
 	// Swizzling
 	Vec2 xx();
 	Vec2 xy();
@@ -48,31 +80,7 @@ public:
 	Vec3 zzy();
 	Vec3 zzz();
 
-	double Length();
-	double Dot(Vec3 vec);
-	Vec3 Normalize();
-	std::string ToString();
-
-	Vec3 operator+(Vec3 vec);
-	Vec3 operator+(double scalar);
-	Vec3& operator+=(Vec3 vec);
-	Vec3& operator+=(double scalar);
-
-	Vec3 operator-(Vec3 vec);
-	Vec3 operator-(double scalar);
-	Vec3& operator-=(Vec3 vec);
-	Vec3& operator-=(double scalar);
-
-	Vec3 operator*(Vec3 vec);
-	Vec3 operator*(double scalar);
-	Vec3& operator*=(Vec3 vec);
-	Vec3& operator*=(double scalar);
-
-	Vec3 operator/(Vec3 vec);
-	Vec3 operator/(double scalar);
-	Vec3& operator/=(Vec3 vec);
-	Vec3& operator/=(double scalar);
-
+	// Getters & setters
 	double x();
 	double y();
 	double z();

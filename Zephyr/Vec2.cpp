@@ -15,27 +15,28 @@ Vec2::Vec2(double x, double y)
 
 Vec2::~Vec2() { }
 
-// Swizzling
-Vec2 Vec2::xx()
+
+// Static methods
+Vec2 Vec2::Up()
 {
-	Vec2 vec;
-	vec.Set(this->x, this->x);
-	return vec;
+	return Vec2(0, 1);
 }
 
-Vec2 Vec2::yy()
+Vec2 Vec2::Down()
 {
-	Vec2 vec;
-	vec.Set(this->y, this->y);
-	return vec;
+	return Vec2(0, -1);
 }
 
-Vec2 Vec2::yx()
+Vec2 Vec2::Left()
 {
-	Vec2 vec;
-	vec.Set(this->y, this->x);
-	return vec;
+	return Vec2(-1, 0);
 }
+
+Vec2 Vec2::Right()
+{
+	return Vec2(1, 0);
+}
+
 
 double Vec2::Length()
 {
@@ -59,124 +60,153 @@ std::string Vec2::ToString()
 	std::ostringstream stream;
 
 	value = "(";
-	stream << value << this->x();
+	stream << value << this->_x;
 	value = ", ";
-	stream << value << this->y();
+	stream << value << this->_y;
 	value = ")";
 	stream << value;
 
 	return stream.str();
 }
 
+
 // Operator overloads
 Vec2 Vec2::operator+(Vec2 vec)
 {
 	Vec2 vector;
-	vector.Set(this->x() + vec.x(), this->y() + vec.y());
+	vector.Set(this->_x + vec.x(), this->_y + vec.y());
 	return vector;
 }
 
 Vec2 Vec2::operator+(double scalar)
 {
 	Vec2 vector;
-	vector.Set(this->x() + scalar, this->y() + scalar);
+	vector.Set(this->_x + scalar, this->_y + scalar);
 	return vector;
 }
 
 Vec2& Vec2::operator+=(Vec2 vec)
 {
-	this->Set(this->x() + vec.x(), this->y() + vec.y());
+	this->Set(this->_x + vec.x(), this->_y + vec.y());
 	return *this;
 }
 
 Vec2& Vec2::operator+=(double scalar)
 {
-	this->Set(this->x() + scalar, this->y() + scalar);
+	this->Set(this->_x + scalar, this->_y + scalar);
 	return *this;
 }
-
 
 Vec2 Vec2::operator-(Vec2 vec)
 {
 	Vec2 vector;
-	vector.Set(this->x() - vec.x(), this->y() - vec.y());
+	vector.Set(this->_x - vec.x(), this->_y - vec.y());
 	return vector;
 }
 
 Vec2 Vec2::operator-(double scalar)
 {
 	Vec2 vector;
-	vector.Set(this->x() - scalar, this->y() - scalar);
+	vector.Set(this->_x - scalar, this->_y - scalar);
 	return vector;
 }
 
 Vec2& Vec2::operator-=(Vec2 vec)
 {
-	this->Set(this->x() - vec.x(), this->y() - vec.y());
+	this->Set(this->_x - vec.x(), this->_y - vec.y());
 	return *this;
 }
 
 Vec2& Vec2::operator-=(double scalar)
 {
-	this->Set(this->x() - scalar, this->y() - scalar);
+	this->Set(this->_x - scalar, this->_y - scalar);
 	return *this;
 }
-
 
 Vec2 Vec2::operator*(Vec2 vec)
 {
 	Vec2 vector;
-	vector.Set(this->x() * vec.x(), this->y() * vec.y());
+	vector.Set(this->_x * vec.x(), this->_y * vec.y());
 	return vector;
 }
 
 Vec2 Vec2::operator*(double scalar)
 {
 	Vec2 vector;
-	vector.Set(this->x() * scalar, this->y() * scalar);
+	vector.Set(this->_x * scalar, this->_y * scalar);
 	return vector;
 }
 
 Vec2& Vec2::operator*=(Vec2 vec)
 {
-	this->Set(this->x() * vec.x(), this->y() * vec.y());
+	this->Set(this->_x * vec.x(), this->_y * vec.y());
 	return *this;
 }
 
 Vec2& Vec2::operator*=(double scalar)
 {
-	this->Set(this->x() * scalar, this->y() * scalar);
+	this->Set(this->_x * scalar, this->_y * scalar);
 	return *this;
 }
-
 
 Vec2 Vec2::operator/(Vec2 vec)
 {
 	Vec2 vector;
-	vector.Set(this->x() / vec.x(), this->y() / vec.y());
+	vector.Set(this->_x / vec.x(), this->_y / vec.y());
 	return vector;
 }
 
 Vec2 Vec2::operator/(double scalar)
 {
 	Vec2 vector;
-	vector.Set(this->x() / scalar, this->y() / scalar);
+	vector.Set(this->_x / scalar, this->_y / scalar);
 	return vector;
 }
 
 Vec2& Vec2::operator/=(Vec2 vec)
 {
-	this->Set(this->x() / vec.x(), this->y() / vec.y());
+	this->Set(this->_x / vec.x(), this->_y / vec.y());
 	return *this;
 }
 
 Vec2& Vec2::operator/=(double scalar)
 {
-	this->Set(this->x() / scalar, this->y() / scalar);
+	this->Set(this->_x / scalar, this->_y / scalar);
 	return *this;
 }
 
 
+// Swizzling
+Vec2 Vec2::xx()
+{
+	Vec2 vec;
+	vec.Set(this->_x, this->_x);
+	return vec;
+}
+
+Vec2 Vec2::xy()
+{
+	Vec2 vec;
+	vec.Set(this->_x, this->_y);
+	return vec;
+}
+
+Vec2 Vec2::yy()
+{
+	Vec2 vec;
+	vec.Set(this->_y, this->_y);
+	return vec;
+}
+
+Vec2 Vec2::yx()
+{
+	Vec2 vec;
+	vec.Set(this->_y, this->_x);
+	return vec;
+}
+
+
+// Getters & setters
 void Vec2::Set(double x, double y)
 {
 	this->_x = x;

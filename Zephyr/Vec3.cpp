@@ -17,6 +17,188 @@ Vec3::Vec3(double x, double y, double z)
 
 Vec3::~Vec3() { }
 
+
+// Static methods
+Vec3 Vec3::Up()
+{
+	return Vec3(0, 1, 0);
+}
+
+Vec3 Vec3::Down()
+{
+	return Vec3(0, -1, 0);
+}
+
+Vec3 Vec3::Left()
+{
+	return Vec3(-1, 0, 0);
+}
+
+Vec3 Vec3::Right()
+{
+	return Vec3(1, 0, 0);
+}
+
+Vec3 Vec3::Forward()
+{
+	return Vec3(0, 0, 1);
+}
+
+Vec3 Vec3::Backward()
+{
+	return Vec3(0, 0, -1);
+}
+
+
+double Vec3::Length()
+{
+	return sqrt(this->_x * this->_x + this->_y * this->_y + this->_z * this->_z);
+}
+
+double Vec3::Dot(Vec3 vec)
+{
+	return this->_x * vec.x() + this->_y * vec.y() + this->_z * vec.z();
+}
+
+Vec3 Vec3::Cross(Vec3 vec)
+{
+	Vec3 newVec;
+	newVec.Set(	this->_y * vec.z() - this->_z * vec.y(),
+				this->_z * vec.x() - this->_x * vec.z(),
+				this->_x * vec.y() - this->_y * vec.x());
+	return newVec;
+}
+
+Vec3 Vec3::Normalize()
+{
+	*this /= this->Length();
+	return *this;
+}
+
+std::string Vec3::ToString()
+{
+	std::string value;
+	std::ostringstream stream;
+
+	value = "(";
+	stream << value << this->_x;
+	value = ", ";
+	stream << value << this->_y;
+	value = ", ";
+	stream << value << this->_z;
+	value = ")";
+	stream << value;
+
+	return stream.str();
+}
+
+
+// Operator overloads
+Vec3 Vec3::operator+(Vec3 vec)
+{
+	Vec3 vector;
+	vector.Set(this->_x + vec.x(), this->_y + vec.y(), this->_z + vec.z());
+	return vector;
+}
+
+Vec3 Vec3::operator+(double scalar)
+{
+	Vec3 vector;
+	vector.Set(this->_x + scalar, this->_y + scalar, this->_z + scalar);
+	return vector;
+}
+
+Vec3& Vec3::operator+=(Vec3 vec)
+{
+	this->Set(this->_x + vec.x(), this->_y + vec.y(), this->_z + vec.z());
+	return *this;
+}
+
+Vec3& Vec3::operator+=(double scalar)
+{
+	this->Set(this->_x + scalar, this->_y + scalar, this->_z + scalar);
+	return *this;
+}
+
+Vec3 Vec3::operator-(Vec3 vec)
+{
+	Vec3 vector;
+	vector.Set(this->_x - vec.x(), this->_y - vec.y(), this->_z - vec.z());
+	return vector;
+}
+
+Vec3 Vec3::operator-(double scalar)
+{
+	Vec3 vector;
+	vector.Set(this->_x - scalar, this->_y - scalar, this->_z - scalar);
+	return vector;
+}
+
+Vec3& Vec3::operator-=(Vec3 vec)
+{
+	this->Set(this->_x - vec.x(), this->_y - vec.y(), this->_z - vec.z());
+	return *this;
+}
+
+Vec3& Vec3::operator-=(double scalar)
+{
+	this->Set(this->_x - scalar, this->_y - scalar, this->_z - scalar);
+	return *this;
+}
+
+Vec3 Vec3::operator*(Vec3 vec)
+{
+	Vec3 vector;
+	vector.Set(this->_x * vec.x(), this->_y * vec.y(), this->_z * vec.z());
+	return vector;
+}
+
+Vec3 Vec3::operator*(double scalar)
+{
+	Vec3 vector;
+	vector.Set(this->_x * scalar, this->_y * scalar, this->_z * scalar);
+	return vector;
+}
+
+Vec3& Vec3::operator*=(Vec3 vec)
+{
+	this->Set(this->_x * vec.x(), this->_y * vec.y(), this->_z * vec.z());
+	return *this;
+}
+
+Vec3& Vec3::operator*=(double scalar)
+{
+	this->Set(this->_x * scalar, this->_y * scalar, this->_z * scalar);
+	return *this;
+}
+
+Vec3 Vec3::operator/(Vec3 vec)
+{
+	Vec3 vector;
+	vector.Set(this->_x / vec.x(), this->_y / vec.y(), this->_z / vec.z());
+	return vector;
+}
+
+Vec3 Vec3::operator/(double scalar)
+{
+	Vec3 vector;
+	vector.Set(this->_x / scalar, this->_y / scalar, this->_z / scalar);
+	return vector;
+}
+
+Vec3& Vec3::operator/=(Vec3 vec)
+{
+	this->Set(this->_x / vec.x(), this->_y / vec.y(), this->_z / vec.z());
+	return *this;
+}
+
+Vec3& Vec3::operator/=(double scalar)
+{
+	this->Set(this->_x / scalar, this->_y / scalar, this->_z / scalar);
+	return *this;
+}
+
+
 // Swizzling
 Vec2 Vec3::xx()
 {
@@ -271,146 +453,7 @@ Vec3 Vec3::zzz()
 }
 
 
-double Vec3::Length()
-{
-	return sqrt(this->_x * this->_x + this->_y * this->_y);
-}
-
-double Vec3::Dot(Vec3 vec)
-{
-	return this->_x * vec.x() + this->_y * vec.y();
-}
-
-Vec3 Vec3::Normalize()
-{
-	*this /= this->Length();
-	return *this;
-}
-
-std::string Vec3::ToString()
-{
-	std::string value;
-	std::ostringstream stream;
-
-	value = "(";
-	stream << value << this->x();
-	value = ", ";
-	stream << value << this->y();
-	value = ")";
-	stream << value;
-
-	return stream.str();
-}
-
-// Operator overloads
-Vec3 Vec3::operator+(Vec3 vec)
-{
-	Vec3 vector;
-	vector.Set(this->x() + vec.x(), this->y() + vec.y());
-	return vector;
-}
-
-Vec3 Vec3::operator+(double scalar)
-{
-	Vec3 vector;
-	vector.Set(this->x() + scalar, this->y() + scalar);
-	return vector;
-}
-
-Vec3& Vec3::operator+=(Vec3 vec)
-{
-	this->Set(this->x() + vec.x(), this->y() + vec.y());
-	return *this;
-}
-
-Vec3& Vec3::operator+=(double scalar)
-{
-	this->Set(this->x() + scalar, this->y() + scalar);
-	return *this;
-}
-
-
-Vec3 Vec3::operator-(Vec3 vec)
-{
-	Vec3 vector;
-	vector.Set(this->x() - vec.x(), this->y() - vec.y());
-	return vector;
-}
-
-Vec3 Vec3::operator-(double scalar)
-{
-	Vec3 vector;
-	vector.Set(this->x() - scalar, this->y() - scalar);
-	return vector;
-}
-
-Vec3& Vec3::operator-=(Vec3 vec)
-{
-	this->Set(this->x() - vec.x(), this->y() - vec.y());
-	return *this;
-}
-
-Vec3& Vec3::operator-=(double scalar)
-{
-	this->Set(this->x() - scalar, this->y() - scalar);
-	return *this;
-}
-
-
-Vec3 Vec3::operator*(Vec3 vec)
-{
-	Vec3 vector;
-	vector.Set(this->x() * vec.x(), this->y() * vec.y());
-	return vector;
-}
-
-Vec3 Vec3::operator*(double scalar)
-{
-	Vec3 vector;
-	vector.Set(this->x() * scalar, this->y() * scalar);
-	return vector;
-}
-
-Vec3& Vec3::operator*=(Vec3 vec)
-{
-	this->Set(this->x() * vec.x(), this->y() * vec.y());
-	return *this;
-}
-
-Vec3& Vec3::operator*=(double scalar)
-{
-	this->Set(this->x() * scalar, this->y() * scalar);
-	return *this;
-}
-
-
-Vec3 Vec3::operator/(Vec3 vec)
-{
-	Vec3 vector;
-	vector.Set(this->x() / vec.x(), this->y() / vec.y());
-	return vector;
-}
-
-Vec3 Vec3::operator/(double scalar)
-{
-	Vec3 vector;
-	vector.Set(this->x() / scalar, this->y() / scalar);
-	return vector;
-}
-
-Vec3& Vec3::operator/=(Vec3 vec)
-{
-	this->Set(this->x() / vec.x(), this->y() / vec.y());
-	return *this;
-}
-
-Vec3& Vec3::operator/=(double scalar)
-{
-	this->Set(this->x() / scalar, this->y() / scalar);
-	return *this;
-}
-
-
+// Getters & setters
 void Vec3::Set(double x, double y, double z)
 {
 	this->_x = x;
