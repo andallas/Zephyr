@@ -19,16 +19,19 @@ public:
 	static Vec2 Left();
 	static Vec2 Right();
 
-	double Length();
+	double Magnitude();
 	double Dot(Vec2 vec);
 	Vec2 Normalize();
+	double Distance(Vec2 vec);
 	std::string ToString();
 
 	// Operator overloads
+	bool operator==(Vec2 vec);
 	Vec2 operator+(Vec2 vec);
 	Vec2 operator+(double scalar);
 	Vec2& operator+=(Vec2 vec);
 	Vec2& operator+=(double scalar);
+	Vec2 operator-();
 	Vec2 operator-(Vec2 vec);
 	Vec2 operator-(double scalar);
 	Vec2& operator-=(Vec2 vec);
@@ -41,6 +44,7 @@ public:
 	Vec2 operator/(double scalar);
 	Vec2& operator/=(Vec2 vec);
 	Vec2& operator/=(double scalar);
+	double operator[](int index);
 
 	// Swizzling
 	Vec2 xx();

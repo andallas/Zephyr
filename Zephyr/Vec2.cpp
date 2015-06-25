@@ -1,29 +1,13 @@
 #include "Vec2.h"
 #include <sstream>
 
-Vec2::Vec2()
-{
-	this->_x = 0;
-	this->_y = 0;
-}
+Vec2::Vec2() : _x(0), _y(0) { }
 
-Vec2::Vec2(double x, double y)
-{
-	this->_x = x;
-	this->_y = y;
-}
+Vec2::Vec2(double x, double y) : _x(x), _y(y) { }
 
-Vec2::Vec2(Vec3 vec)
-{
-	this->_x = vec.x();
-	this->_y = vec.y();
-}
+Vec2::Vec2(Vec3 vec) : _x(vec.x()), _y(vec.y()) { }
 
-Vec2::Vec2(Vec4 vec)
-{
-	this->_x = vec.x();
-	this->_y = vec.y();
-}
+Vec2::Vec2(Vec4 vec) : _x(vec.x()), _y(vec.y()) { }
 
 Vec2::~Vec2() { }
 
@@ -50,7 +34,7 @@ Vec2 Vec2::Right()
 }
 
 
-double Vec2::Length()
+double Vec2::Magnitude()
 {
 	return sqrt(this->_x * this->_x + this->_y * this->_y);
 }
@@ -62,8 +46,20 @@ double Vec2::Dot(Vec2 vec)
 
 Vec2 Vec2::Normalize()
 {
-	*this /= this->Length();
+	double fMag = (this->_x * this->_x + this->_y * this->_y);
+	if (fMag == 0)
+		return *this;
+
+	float fMult = 1.0 / sqrtf(fMag);
+	this->_x *= fMult;
+	this->_y *= fMult;
+
 	return *this;
+}
+
+double Vec2::Distance(Vec2 vec)
+{
+	return (*this - vec).Magnitude();
 }
 
 std::string Vec2::ToString()
@@ -83,6 +79,11 @@ std::string Vec2::ToString()
 
 
 // Operator overloads
+bool Vec2::operator==(Vec2 vec)
+{
+	return (this->_x == vec.x() && this->_y == vec.y());
+}
+
 Vec2 Vec2::operator+(Vec2 vec)
 {
 	Vec2 vector;
@@ -107,6 +108,13 @@ Vec2& Vec2::operator+=(double scalar)
 {
 	this->Set(this->_x + scalar, this->_y + scalar);
 	return *this;
+}
+
+Vec2 Vec2::operator-()
+{
+	Vec2 vector;
+	vector.Set(-this->_x, -this->_y);
+	return vector;
 }
 
 Vec2 Vec2::operator-(Vec2 vec)
@@ -187,6 +195,16 @@ Vec2& Vec2::operator/=(double scalar)
 	return *this;
 }
 
+double Vec2::operator[](int index)
+{
+	switch (index)
+	{
+	case 0:
+		return this->_x;
+	default:
+		return this->_y;
+	}
+}
 
 // Swizzling
 Vec2 Vec2::xx()

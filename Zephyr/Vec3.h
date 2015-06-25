@@ -21,17 +21,20 @@ public:
 	static Vec3 Forward();
 	static Vec3 Backward();
 
-	double Length();
+	double Magnitude();
 	double Dot(Vec3 vec);
 	Vec3 Cross(Vec3 vec);
 	Vec3 Normalize();
+	double Distance(Vec3 vec);
 	std::string ToString();
 
 	// Operator Overloads
+	bool operator==(Vec3 vec);
 	Vec3 operator+(Vec3 vec);
 	Vec3 operator+(double scalar);
 	Vec3& operator+=(Vec3 vec);
 	Vec3& operator+=(double scalar);
+	Vec3 operator-();
 	Vec3 operator-(Vec3 vec);
 	Vec3 operator-(double scalar);
 	Vec3& operator-=(Vec3 vec);
@@ -44,6 +47,7 @@ public:
 	Vec3 operator/(double scalar);
 	Vec3& operator/=(Vec3 vec);
 	Vec3& operator/=(double scalar);
+	double operator[](int index);
 
 	// Swizzling
 	Vec2 xx();

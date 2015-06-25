@@ -1,45 +1,15 @@
 #include "Vec4.h"
 #include <sstream>
 
-Vec4::Vec4()
-{
-	this->_x = 0;
-	this->_y = 0;
-	this->_z = 0;
-	this->_w = 0;
-}
+Vec4::Vec4() : _x(0), _y(0), _z(0), _w(0) { }
 
-Vec4::Vec4(double x, double y, double z, double w)
-{
-	this->_x = x;
-	this->_y = y;
-	this->_z = z;
-	this->_w = w;
-}
+Vec4::Vec4(double x, double y, double z, double w) : _x(w), _y(y), _z(z), _w(w) { }
 
-Vec4::Vec4(Vec3 vec, double w)
-{
-	this->_x = vec.x();
-	this->_y = vec.y();
-	this->_z = vec.z();
-	this->_w = w;
-}
+Vec4::Vec4(Vec3 vec, double w) : _x(vec.x()), _y(vec.y()), _z(vec.z()), _w(w) { }
 
-Vec4::Vec4(Vec2 vec, double z, double w)
-{
-	this->_x = vec.x();
-	this->_y = vec.y();
-	this->_z = z;
-	this->_w = w;
-}
+Vec4::Vec4(Vec2 vec, double z, double w) : _x(vec.x()), _y(vec.y()), _z(z), _w(w) { }
 
-Vec4::Vec4(Vec2 vec1, Vec2 vec2)
-{
-	this->_x = vec1.x();
-	this->_y = vec1.y();
-	this->_z = vec2.x();
-	this->_w = vec2.y();
-}
+Vec4::Vec4(Vec2 vec1, Vec2 vec2) : _x(vec1.x()), _y(vec1.y()), _z(vec2.x()), _w(vec2.y()) { }
 
 Vec4::~Vec4() { }
 
@@ -76,7 +46,7 @@ Vec4 Vec4::Backward()
 }
 
 
-double Vec4::Length()
+double Vec4::Magnitude()
 {
 	return sqrt(this->_x * this->_x + this->_y * this->_y + this->_z * this->_z + this->_w * this->_w);
 }
@@ -97,8 +67,13 @@ Vec3 Vec4::Cross(Vec4 vec)
 
 Vec4 Vec4::Normalize()
 {
-	*this /= this->Length();
+	*this /= this->Magnitude();
 	return *this;
+}
+
+double Vec4::Distance(Vec4 vec)
+{
+	return (*this - vec).Magnitude();
 }
 
 std::string Vec4::ToString()
@@ -122,6 +97,11 @@ std::string Vec4::ToString()
 
 
 // Operator overloads
+bool Vec4::operator==(Vec4 vec)
+{
+	return (this->_x == vec.x() && this->_y == vec.y() && this->_z == vec.z() && this->_w == vec.w());
+}
+
 Vec4 Vec4::operator+(Vec4 vec)
 {
 	Vec4 vector;
@@ -146,6 +126,13 @@ Vec4& Vec4::operator+=(double scalar)
 {
 	this->Set(this->_x + scalar, this->_y + scalar, this->_z + scalar, this->_w + scalar);
 	return *this;
+}
+
+Vec4 Vec4::operator-()
+{
+	Vec4 vector;
+	vector.Set(-this->_x, -this->_y, -this->_z, -this->_w);
+	return vector;
 }
 
 Vec4 Vec4::operator-(Vec4 vec)
@@ -226,6 +213,20 @@ Vec4& Vec4::operator/=(double scalar)
 	return *this;
 }
 
+double Vec4::operator[](int index)
+{
+	switch (index)
+	{
+	case 0:
+		return this->_x;
+	case 1:
+		return this->_y;
+	case 2:
+		return this->_z;
+	default:
+		return this->_w;
+	}
+}
 
 // Swizzling
 Vec2 Vec4::xx()

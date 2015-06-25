@@ -22,17 +22,20 @@ public:
 	static Vec4 Forward();
 	static Vec4 Backward();
 
-	double Length();
+	double Magnitude();
 	double Dot(Vec4 vec);
 	Vec3 Cross(Vec4 vec);
 	Vec4 Normalize();
+	double Distance(Vec4 vec);
 	std::string ToString();
 
 	// Operator Overloads
+	bool operator==(Vec4 vec);
 	Vec4 operator+(Vec4 vec);
 	Vec4 operator+(double scalar);
 	Vec4& operator+=(Vec4 vec);
 	Vec4& operator+=(double scalar);
+	Vec4 operator-();
 	Vec4 operator-(Vec4 vec);
 	Vec4 operator-(double scalar);
 	Vec4& operator-=(Vec4 vec);
@@ -45,6 +48,7 @@ public:
 	Vec4 operator/(double scalar);
 	Vec4& operator/=(Vec4 vec);
 	Vec4& operator/=(double scalar);
+	double operator[](int index);
 
 	// Swizzling
 	Vec2 xx();

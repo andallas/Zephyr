@@ -1,33 +1,13 @@
 #include "Vec3.h"
 #include <sstream>
 
-Vec3::Vec3()
-{
-	this->_x = 0;
-	this->_y = 0;
-	this->_z = 0;
-}
+Vec3::Vec3() : _x(0), _y(0), _z(0) { }
 
-Vec3::Vec3(double x, double y, double z)
-{
-	this->_x = x;
-	this->_y = y;
-	this->_z = z;
-}
+Vec3::Vec3(double x, double y, double z) : _x(x), _y(y), _z(z) { }
 
-Vec3::Vec3(Vec2 vec, double z)
-{
-	this->_x = vec.x();
-	this->_y = vec.y();
-	this->_z = z;
-}
+Vec3::Vec3(Vec2 vec, double z) : _x(vec.x()), _y(vec.y()), _z(z) { }
 
-Vec3::Vec3(Vec4 vec)
-{
-	this->_x = vec.x();
-	this->_y = vec.y();
-	this->_z = vec.z();
-}
+Vec3::Vec3(Vec4 vec) : _x(vec.x()), _y(vec.y()), _z(vec.z()) { }
 
 Vec3::~Vec3() { }
 
@@ -64,7 +44,7 @@ Vec3 Vec3::Backward()
 }
 
 
-double Vec3::Length()
+double Vec3::Magnitude()
 {
 	return sqrt(this->_x * this->_x + this->_y * this->_y + this->_z * this->_z);
 }
@@ -85,8 +65,21 @@ Vec3 Vec3::Cross(Vec3 vec)
 
 Vec3 Vec3::Normalize()
 {
-	*this /= this->Length();
+	double fMag = (this->_x * this->_x + this->_y * this->_y + this->_z * this->_z);
+	if (fMag == 0)
+		return *this;
+
+	float fMult = 1.0 / sqrtf(fMag);
+	this->_x *= fMult;
+	this->_y *= fMult;
+	this->_z *= fMult;
+
 	return *this;
+}
+
+double Vec3::Distance(Vec3 vec)
+{
+	return (*this - vec).Magnitude();
 }
 
 std::string Vec3::ToString()
@@ -108,6 +101,11 @@ std::string Vec3::ToString()
 
 
 // Operator overloads
+bool Vec3::operator==(Vec3 vec)
+{
+	return (this->_x == vec.x() && this->_y == vec.y() && this->_z == vec.z());
+}
+
 Vec3 Vec3::operator+(Vec3 vec)
 {
 	Vec3 vector;
@@ -132,6 +130,13 @@ Vec3& Vec3::operator+=(double scalar)
 {
 	this->Set(this->_x + scalar, this->_y + scalar, this->_z + scalar);
 	return *this;
+}
+
+Vec3 Vec3::operator-()
+{
+	Vec3 vector;
+	vector.Set(-this->_x, -this->_y, -this->_z);
+	return vector;
 }
 
 Vec3 Vec3::operator-(Vec3 vec)
@@ -210,6 +215,19 @@ Vec3& Vec3::operator/=(double scalar)
 {
 	this->Set(this->_x / scalar, this->_y / scalar, this->_z / scalar);
 	return *this;
+}
+
+double Vec3::operator[](int index)
+{
+	switch (index)
+	{
+	case 0:
+		return this->_x;
+	case 1:
+		return this->_y;
+	default:
+		return this->_z;
+	}
 }
 
 
