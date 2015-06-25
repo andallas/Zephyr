@@ -2,12 +2,15 @@
 #define VEC3_H
 #include <iostream>
 #include "Vec2.h"
+#include "Vec4.h"
 
 class Vec3
 {
 public:
 	Vec3();
 	Vec3(double x, double y, double z);
+	Vec3(Vec2 vec, double z);
+	Vec3(Vec4 vec);
 	virtual ~Vec3();
 
 	// Static methods

@@ -9,6 +9,9 @@ class Vec4
 public:
 	Vec4();
 	Vec4(double x, double y, double z, double w);
+	Vec4(Vec3 vec, double w);
+	Vec4(Vec2 vec, double z, double w);
+	Vec4(Vec2 vec1, Vec2 vec2);
 	virtual ~Vec4();
 
 	// Static methods
@@ -60,6 +63,7 @@ public:
 	Vec2 wy();
 	Vec2 wz();
 	Vec2 ww();
+
 	Vec3 xxx();
 	Vec3 xxy();
 	Vec3 xxz();
@@ -125,9 +129,6 @@ public:
 	Vec3 wwz();
 	Vec3 www();
 
-
-
-
 	Vec4 xxxx();
 	Vec4 xxxy();
 	Vec4 xxxz();
@@ -144,7 +145,6 @@ public:
 	Vec4 xxwy();
 	Vec4 xxwz();
 	Vec4 xxww();
-
 	Vec4 xyxx();
 	Vec4 xyxy();
 	Vec4 xyxz();
@@ -161,7 +161,6 @@ public:
 	Vec4 xywy();
 	Vec4 xywz();
 	Vec4 xyww();
-
 	Vec4 xzxx();
 	Vec4 xzxy();
 	Vec4 xzxz();
@@ -178,7 +177,6 @@ public:
 	Vec4 xzwy();
 	Vec4 xzwz();
 	Vec4 xzww();
-
 	Vec4 xwxx();
 	Vec4 xwxy();
 	Vec4 xwxz();
@@ -195,8 +193,6 @@ public:
 	Vec4 xwwy();
 	Vec4 xwwz();
 	Vec4 xwww();
-
-
 	Vec4 yxxx();
 	Vec4 yxxy();
 	Vec4 yxxz();
@@ -213,7 +209,6 @@ public:
 	Vec4 yxwy();
 	Vec4 yxwz();
 	Vec4 yxww();
-
 	Vec4 yyxx();
 	Vec4 yyxy();
 	Vec4 yyxz();
@@ -230,7 +225,6 @@ public:
 	Vec4 yywy();
 	Vec4 yywz();
 	Vec4 yyww();
-
 	Vec4 yzxx();
 	Vec4 yzxy();
 	Vec4 yzxz();
@@ -247,8 +241,6 @@ public:
 	Vec4 yzwy();
 	Vec4 yzwz();
 	Vec4 yzww();
-
-
 	Vec4 ywxx();
 	Vec4 ywxy();
 	Vec4 ywxz();
@@ -265,8 +257,6 @@ public:
 	Vec4 ywwy();
 	Vec4 ywwz();
 	Vec4 ywww();
-
-
 	Vec4 zxxx();
 	Vec4 zxxy();
 	Vec4 zxxz();
@@ -283,7 +273,6 @@ public:
 	Vec4 zxwy();
 	Vec4 zxwz();
 	Vec4 zxww();
-
 	Vec4 zyxx();
 	Vec4 zyxy();
 	Vec4 zyxz();
@@ -300,7 +289,6 @@ public:
 	Vec4 zywy();
 	Vec4 zywz();
 	Vec4 zyww();
-
 	Vec4 zzxx();
 	Vec4 zzxy();
 	Vec4 zzxz();
@@ -317,7 +305,6 @@ public:
 	Vec4 zzwy();
 	Vec4 zzwz();
 	Vec4 zzww();
-
 	Vec4 zwxx();
 	Vec4 zwxy();
 	Vec4 zwxz();
@@ -334,7 +321,6 @@ public:
 	Vec4 zwwy();
 	Vec4 zwwz();
 	Vec4 zwww();
-
 	Vec4 wxxx();
 	Vec4 wxxy();
 	Vec4 wxxz();
@@ -392,8 +378,6 @@ public:
 	Vec4 wwyz();
 	Vec4 wwyw();
 	Vec4 wwzx();
-	Vec4 wwzz();
-	Vec4 wwzx();
 	Vec4 wwzy();
 	Vec4 wwzz();
 	Vec4 wwzw();
@@ -401,7 +385,6 @@ public:
 	Vec4 wwwy();
 	Vec4 wwwz();
 	Vec4 wwww();
-
 
 
 	// Getters & setters

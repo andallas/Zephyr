@@ -1,12 +1,16 @@
 #ifndef VEC2_H
 #define VEC2_H
 #include <iostream>
+#include "Vec3.h"
+#include "Vec4.h"
 
 class Vec2
 {
 public:
 	Vec2();
 	Vec2(double x, double y);
+	Vec2(Vec3 vec);
+	Vec2(Vec4 vec);
 	virtual ~Vec2();
 
 	// Static methods

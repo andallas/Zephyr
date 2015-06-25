@@ -13,6 +13,18 @@ Vec2::Vec2(double x, double y)
 	this->_y = y;
 }
 
+Vec2::Vec2(Vec3 vec)
+{
+	this->_x = vec.x();
+	this->_y = vec.y();
+}
+
+Vec2::Vec2(Vec4 vec)
+{
+	this->_x = vec.x();
+	this->_y = vec.y();
+}
+
 Vec2::~Vec2() { }
 
 

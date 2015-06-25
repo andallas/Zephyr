@@ -15,6 +15,20 @@ Vec3::Vec3(double x, double y, double z)
 	this->_z = z;
 }
 
+Vec3::Vec3(Vec2 vec, double z)
+{
+	this->_x = vec.x();
+	this->_y = vec.y();
+	this->_z = z;
+}
+
+Vec3::Vec3(Vec4 vec)
+{
+	this->_x = vec.x();
+	this->_y = vec.y();
+	this->_z = vec.z();
+}
+
 Vec3::~Vec3() { }
 
 
