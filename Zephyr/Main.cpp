@@ -17,12 +17,34 @@ std::string ShaderDirectory();
 std::string ImageDirectory();
 void ErrorCallback(int error, const char* description);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void MouseCallback(GLFWwindow* window, double xPos, double yPos);
+void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+void DoMovement();
+void CalculateTime();
 
 bool wireframeMode = false;
 int exitCode = 0;
 GLFWwindow* window;
 
 const GLuint WIDTH = 800, HEIGHT = 600;
+
+// Camera
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+GLfloat aspect = 45.0f;
+
+// Input
+bool keys[11024];
+GLfloat lastMouseX = 400;
+GLfloat lastMouseY = 300;
+GLfloat yaw = -90.0f;
+GLfloat pitch = 0.0f;
+bool firstMouse = true;
+
+// Clock
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
 
 int main()
 {
@@ -138,12 +160,14 @@ int main()
 	// Texture loading
 	GLuint texture0 = LoadTexture((ImageDirectory() + "container.jpg"));
 	GLuint texture1 = LoadTexture((ImageDirectory() + "awesomeface.png"));
-	
+
 	// Game Loop
 	while (!glfwWindowShouldClose(window))
 	{
 		// Check and call events
 		glfwPollEvents();
+		DoMovement();
+		CalculateTime();
 
 		// Rendering
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -162,9 +186,11 @@ int main()
 
 		// Create transformations
 		glm::mat4 viewMatrix;
+		//viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+		viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
 		glm::mat4 projectionMatrix;
-		viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
-		projectionMatrix = glm::perspective(glm::radians(45.0f), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+		projectionMatrix = glm::perspective(glm::radians(aspect), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
 		GLint modelLocation = glGetUniformLocation(shader.program, "model");
 		GLint viewLocation = glGetUniformLocation(shader.program, "view");
@@ -237,12 +263,15 @@ void Initialization()
 	}
 
 	glViewport(0, 0, WIDTH, HEIGHT);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Depth testing
 	glEnable(GL_DEPTH_TEST);
 
 	// Set callback functions
 	glfwSetKeyCallback(window, KeyCallback);
+	glfwSetCursorPosCallback(window, MouseCallback);
+	glfwSetScrollCallback(window, ScrollCallback);
 
 	// Set clear color
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -320,4 +349,86 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
+
+	if (action == GLFW_PRESS)
+	{
+		keys[key] = true;
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		keys[key] = false;
+	}
+}
+
+void MouseCallback(GLFWwindow* window, double xPos, double yPos)
+{
+	if (firstMouse)
+	{
+		lastMouseX = xPos;
+		lastMouseY = yPos;
+		firstMouse = false;
+	}
+
+	GLfloat xOffset = xPos - lastMouseX;
+	GLfloat yOffset = yPos - lastMouseY;
+	lastMouseX = xPos;
+	lastMouseY = yPos;
+
+	GLfloat sensitivity = 0.05f;
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+
+	yaw += xOffset;
+	pitch += yOffset;
+
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+	front.y = sin(glm::radians(pitch));
+	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+	cameraFront = glm::normalize(front);
+}
+
+void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
+	if (aspect >= 1.0f && aspect <= 45.0f)
+		aspect -= yOffset;
+	if (aspect <= 1.0f)
+		aspect = 1.0f;
+	if (aspect >= 45.0f)
+		aspect = 45.0f;
+}
+
+void DoMovement()
+{
+	GLfloat cameraSpeed = 5.0f * deltaTime;
+	if (keys[GLFW_KEY_W])
+	{
+		cameraPos += cameraSpeed * cameraFront;
+	}
+	if (keys[GLFW_KEY_S])
+	{
+		cameraPos -= cameraSpeed * cameraFront;
+	}
+
+	if (keys[GLFW_KEY_A])
+	{
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
+	if (keys[GLFW_KEY_D])
+	{
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
+}
+
+void CalculateTime()
+{
+	GLfloat currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
 }
