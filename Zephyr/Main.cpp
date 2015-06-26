@@ -5,6 +5,11 @@
 #include "Shader.h"
 #include <SOIL.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
 void Initialization();
 GLuint LoadTexture(std::string texturePath);
 std::string BaseDirectory();
@@ -33,12 +38,11 @@ int main()
 	// Vertex data and buffer objects
 	GLfloat vertices[] =
 	{
-		// Inverted Y coordinates for Textures to fix inverted Y bug on image load
 		// Positions           // Colors           // Texture Coords
-		 0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 0.0f,		// Top Right
-		 0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 1.0f,		// Bottom Right
-		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 1.0f,		// Bottom Left
-		-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 0.0f		// Top Left 
+		 0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f,		// Top Right
+		 0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 0.0f,		// Bottom Right
+		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f,		// Bottom Left
+		-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f		// Top Left 
 	};
 
 	GLuint indices[] =
@@ -85,6 +89,10 @@ int main()
 		// Check and call events
 		glfwPollEvents();
 
+		glm::mat4 transformationMatrix;
+		transformationMatrix = glm::translate(transformationMatrix, glm::vec3(0.5f, -0.5f, 0.0f));
+		transformationMatrix = glm::rotate(transformationMatrix, glm::radians((GLfloat)glfwGetTime() * 50.0f), glm::vec3(0.0, 0.0, 1.0));
+
 		// Rendering
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -95,6 +103,9 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glUniform1i(glGetUniformLocation(shader.program, "ourTexture1"), 1);
+
+		GLuint transformLoc = glGetUniformLocation(shader.program, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transformationMatrix));
 
 		shader.Use();
 		
