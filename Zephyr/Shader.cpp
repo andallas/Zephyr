@@ -32,6 +32,7 @@ std::string Shader::ParseShaderFile(const GLchar* sourcePath)
 {
 	std::ifstream shaderFile;
 	shaderFile.open((sourcePath));
+	std::string path = sourcePath;
 
 	std::string output;
 	std::string line;
@@ -46,33 +47,10 @@ std::string Shader::ParseShaderFile(const GLchar* sourcePath)
 	}
 	else
 	{
-		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
+		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ - " << path << std::endl;
 	}
 
 	return output;
-	/*
-	std::string code;
-	std::ifstream shaderFile;
-	shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	try
-	{
-		shaderFile.open(sourcePath);
-		std::stringstream shaderStream;
-
-		shaderStream << shaderFile.rdbuf();
-
-		shaderFile.close();
-
-		code = shaderStream.str();
-	}
-	catch (std::ifstream::failure error)
-	{
-		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
-	}
-
-	return code;
-	*/
 }
 
 GLuint Shader::Compile(std::string& shaderCode, std::string type)
