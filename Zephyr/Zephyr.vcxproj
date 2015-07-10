@@ -143,6 +143,8 @@
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="lamp.frag" />
+    <None Include="lamp.vert" />
     <None Include="Resources\Shaders\default.frag" />
     <None Include="Resources\Shaders\default.vert" />
   </ItemGroup>

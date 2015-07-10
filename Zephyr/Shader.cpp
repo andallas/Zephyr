@@ -3,6 +3,9 @@
 // public
 Shader::Shader(const GLchar* vertexSourcePath, const GLchar* fragmentSourcePath)
 {
+	vertexPath = vertexSourcePath;
+	fragmentPath = fragmentSourcePath;
+
 	std::string vShaderCode = ParseShaderFile(vertexSourcePath);
 	std::string fShaderCode = ParseShaderFile(fragmentSourcePath);
 
@@ -75,18 +78,22 @@ std::string Shader::ParseShaderFile(const GLchar* sourcePath)
 GLuint Shader::Compile(std::string& shaderCode, std::string type)
 {
 	GLuint shader;
+	std::string path;
+
 	if (type == "VERTEX")
 	{
+		path = vertexPath;
 		shader = glCreateShader(GL_VERTEX_SHADER);
 	}
 	else if (type == "FRAGMENT")
 	{
+		path = fragmentPath;
 		shader = glCreateShader(GL_FRAGMENT_SHADER);
 	}
 
 	if (shader == 0)
 	{
-		std::cerr << "ERROR::SHADER::COMPILE::CREATE_SHADER_FAILED" << std::endl;
+		std::cerr << "ERROR::" << type.c_str() << "SHADER::COMPILE::CREATE_SHADER_FAILED - " << path << std::endl;
 	}
 
 	const GLchar* shaderSourceStrings[1];
@@ -111,7 +118,7 @@ void Shader::CompileCheck(GLuint shader, std::string type)
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cerr << "ERROR::SHADER::" << type.c_str() << "::COMPILATION_FAILED\n" << infoLog << std::endl;
+		std::cerr << "ERROR::" << type.c_str() << "SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 }
 
