@@ -1,9 +1,10 @@
-#define GLEW_STATIC
-#include <glew.h>
-#include <glfw3.h>
+#include "MemoryLeakDetector.h"
+
 #include <iostream>
+#include "Window.h"
 #include "Shader.h"
-#include <SOIL.h>
+#include "TextureLoader.h"
+#include "Utility.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,7 +25,7 @@ void CalculateTime();
 
 bool wireframeMode = false;
 int exitCode = 0;
-GLFWwindow* window;
+Window* window;
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 
@@ -41,6 +42,7 @@ GLfloat lastMouseY = 300;
 GLfloat yaw = -90.0f;
 GLfloat pitch = 0.0f;
 bool firstMouse = true;
+bool inverted = false;
 
 // Clock
 GLfloat deltaTime = 0.0f;
@@ -60,8 +62,8 @@ int main()
 	}
 
 	// Build and compile shaders
-	Shader defaultShader((ShaderDirectory() + "default.vert").c_str(), (ShaderDirectory() + "default.frag").c_str());
-	Shader lampShader((ShaderDirectory() + "lamp.vert").c_str(), (ShaderDirectory() + "lamp.frag").c_str());
+	Shader defaultShader((Utility::ShaderDirectory() + "default.vert").c_str(), (Utility::ShaderDirectory() + "default.frag").c_str());
+	Shader lampShader((Utility::ShaderDirectory() + "lamp.vert").c_str(), (Utility::ShaderDirectory() + "lamp.frag").c_str());
 
 	// Vertex data and buffer objects
 	GLfloat vertices[] =
@@ -128,7 +130,7 @@ int main()
 	glBindVertexArray(0);
 
 	// Game Loop
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window->CurrentWindow()))
 	{
 		// Check and call events
 		glfwPollEvents();
@@ -183,18 +185,26 @@ int main()
 		glBindVertexArray(0);
 
 		// Swap buffers
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(window->CurrentWindow());
 	}
 
 	glDeleteVertexArrays(1, &VAO);
 	//glDeleteBuffers(1, &IBO);
 	glDeleteBuffers(1, &VBO);
+	delete window;
 	glfwTerminate();
+
+#ifdef _DEBUG
+	std::cout << CurrentMemoryUsage() << std::endl;
+	DumpUnfreed();
+#endif
 	return exitCode;
 }
 
 void Initialization()
 {
+	window = new Window(WIDTH, HEIGHT, "Zephyr", nullptr, nullptr);
+
 	glfwSetErrorCallback(ErrorCallback);
 
 	if (!glfwInit())
@@ -209,15 +219,16 @@ void Initialization()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Mac OS X compatibility
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Zephyr", nullptr, nullptr);
-	if (window == nullptr)
+	window->Initialize();
+
+	if (window->CurrentWindow() == nullptr)
 	{
 		std::cerr << "ERROR::MAIN::MAIN::CREATE_WINDOW_FAILED\n" << std::endl;
 		glfwTerminate();
 		exitCode = -1;
 	}
 
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(window->CurrentWindow());
 
 	glewExperimental = GL_TRUE;
 	GLenum error = glewInit();
@@ -230,65 +241,18 @@ void Initialization()
 	}
 
 	glViewport(0, 0, WIDTH, HEIGHT);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window->CurrentWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Depth testing
 	glEnable(GL_DEPTH_TEST);
 
 	// Set callback functions
-	glfwSetKeyCallback(window, KeyCallback);
-	glfwSetCursorPosCallback(window, MouseCallback);
-	glfwSetScrollCallback(window, ScrollCallback);
+	glfwSetKeyCallback(window->CurrentWindow(), KeyCallback);
+	glfwSetCursorPosCallback(window->CurrentWindow(), MouseCallback);
+	glfwSetScrollCallback(window->CurrentWindow(), ScrollCallback);
 
 	// Set clear color
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-}
-
-GLuint LoadTexture(std::string texturePath)
-{
-	GLuint texture;
-	glGenTextures(1, &texture);
-
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height;
-	unsigned char* image = SOIL_load_image(texturePath.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	return texture;
-}
-
-std::string BaseDirectory()
-{
-	char full[_MAX_PATH];
-	if (_fullpath(full, ".\\", _MAX_PATH) != NULL)
-	{
-		return full;
-	}
-
-	std::cerr << "ERROR::MAIN::BASE_DIRECTORY::INVALID_PATH\n" << std::endl;
-
-	return "";
-}
-
-std::string ShaderDirectory()
-{
-	return (BaseDirectory() + "Resources\\Shaders\\");
-}
-
-std::string ImageDirectory()
-{
-	return (BaseDirectory() + "Resources\\Images\\");
 }
 
 void ErrorCallback(int error, const char* description)
@@ -355,9 +319,9 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 		pitch = -89.0f;
 
 	glm::vec3 front;
-	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-	front.y = sin(glm::radians(pitch));
-	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+	front.x = cos(glm::radians((inverted) ? pitch : -pitch)) * cos(glm::radians(yaw));
+	front.y = sin(glm::radians((inverted) ? pitch : -pitch));
+	front.z = cos(glm::radians((inverted) ? pitch : -pitch)) * sin(glm::radians(yaw));
 	cameraFront = glm::normalize(front);
 }
 

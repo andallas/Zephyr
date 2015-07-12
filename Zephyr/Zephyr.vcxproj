@@ -138,9 +138,16 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MemoryLeakDetector.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="Utility.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lamp.frag" />
