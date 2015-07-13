@@ -1,22 +1,17 @@
 #include "MemoryLeakDetector.h"
-
-#include <iostream>
+#include "Context.h"
 #include "Window.h"
 #include "Shader.h"
 #include "TextureLoader.h"
 #include "Utility.h"
 
+#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 
 void Initialization();
-GLuint LoadTexture(std::string texturePath);
-std::string BaseDirectory();
-std::string ShaderDirectory();
-std::string ImageDirectory();
-void ErrorCallback(int error, const char* description);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
@@ -26,6 +21,7 @@ void CalculateTime();
 bool wireframeMode = false;
 int exitCode = 0;
 Window* window;
+Context* context;
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 
@@ -191,8 +187,13 @@ int main()
 	glDeleteVertexArrays(1, &VAO);
 	//glDeleteBuffers(1, &IBO);
 	glDeleteBuffers(1, &VBO);
+	delete context;
 	delete window;
 	glfwTerminate();
+
+
+	Context* contexts[] = { new Context(100, 100), new Context(100, 100), new Context(100, 100) };
+	delete[] contexts;
 
 #ifdef _DEBUG
 	std::cout << CurrentMemoryUsage() << std::endl;
@@ -203,62 +204,20 @@ int main()
 
 void Initialization()
 {
+	context = new Context(WIDTH, HEIGHT);
 	window = new Window(WIDTH, HEIGHT, "Zephyr", nullptr, nullptr);
 
-	glfwSetErrorCallback(ErrorCallback);
-
-	if (!glfwInit())
-	{
-		std::cerr << "ERROR::MAIN::MAIN::GLFW_INIT_FAILED\n" << std::endl;
-		exitCode = -1;
-	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Mac OS X compatibility
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
+	context->PreInitialization();
 	window->Initialize();
+	context->PostInitialization(window->CurrentWindow());
 
-	if (window->CurrentWindow() == nullptr)
-	{
-		std::cerr << "ERROR::MAIN::MAIN::CREATE_WINDOW_FAILED\n" << std::endl;
-		glfwTerminate();
-		exitCode = -1;
-	}
-
-	glfwMakeContextCurrent(window->CurrentWindow());
-
-	glewExperimental = GL_TRUE;
-	GLenum error = glewInit();
-
-	if (error != GLEW_OK)
-	{
-		std::cerr << "ERROR::MAIN::MAIN::GLEW_INIT_FAILED\n" << glewGetErrorString(error) << std::endl;
-		glfwTerminate();
-		exitCode = -1;
-	}
-
-	glViewport(0, 0, WIDTH, HEIGHT);
+	// TODO: Move to input class
 	glfwSetInputMode(window->CurrentWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	// Depth testing
-	glEnable(GL_DEPTH_TEST);
 
 	// Set callback functions
 	glfwSetKeyCallback(window->CurrentWindow(), KeyCallback);
 	glfwSetCursorPosCallback(window->CurrentWindow(), MouseCallback);
 	glfwSetScrollCallback(window->CurrentWindow(), ScrollCallback);
-
-	// Set clear color
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-}
-
-void ErrorCallback(int error, const char* description)
-{
-	std::cerr << "ERROR::GLFW_ERROR\n " << error << " - " << description << std::endl;
-	exitCode = -1;
 }
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -295,15 +254,15 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 {
 	if (firstMouse)
 	{
-		lastMouseX = xPos;
-		lastMouseY = yPos;
+		lastMouseX = (GLfloat)xPos;
+		lastMouseY = (GLfloat)yPos;
 		firstMouse = false;
 	}
 
-	GLfloat xOffset = xPos - lastMouseX;
-	GLfloat yOffset = yPos - lastMouseY;
-	lastMouseX = xPos;
-	lastMouseY = yPos;
+	GLfloat xOffset = (GLfloat)(xPos - lastMouseX);
+	GLfloat yOffset = (GLfloat)(yPos - lastMouseY);
+	lastMouseX = (GLfloat)xPos;
+	lastMouseY = (GLfloat)yPos;
 
 	GLfloat sensitivity = 0.05f;
 	xOffset *= sensitivity;
@@ -328,11 +287,17 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
 	if (aspect >= 1.0f && aspect <= 45.0f)
-		aspect -= yOffset;
+	{
+		aspect -= (GLfloat)yOffset;
+	}
 	if (aspect <= 1.0f)
+	{
 		aspect = 1.0f;
+	}
 	if (aspect >= 45.0f)
+	{
 		aspect = 45.0f;
+	}
 }
 
 void DoMovement()
@@ -359,7 +324,7 @@ void DoMovement()
 
 void CalculateTime()
 {
-	GLfloat currentFrame = glfwGetTime();
+	GLfloat currentFrame = (GLfloat)glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 }

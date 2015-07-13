@@ -6,6 +6,7 @@
 #include <list>
 #include <iostream>
 #include <sstream>
+#include <new>
 
 
 #ifdef _DEBUG
@@ -142,20 +143,44 @@
 		}
 
 		return results.str();
-	}
+	};
 
-	inline void* __cdecl operator new(unsigned int size, const char* file, int line)
+	void* __cdecl operator new(size_t size, const char* file, int line)
 	{
 		void* pointer = (void*)malloc(size);
+		if (!pointer)
+		{
+			std::bad_alloc ba;
+			throw ba;
+		}
 		AddTrack((DWORD)pointer, size, file, line);
 		return(pointer);
 	};
 
-	inline void __cdecl operator delete(void* p)
+	void* __cdecl operator new[](size_t size, const char* file, int line)
+	{
+		void* pointer = (void*)malloc(size);
+		if (!pointer)
+		{
+			std::bad_alloc ba;
+			throw ba;
+		}
+		AddTrack((DWORD)pointer, size, file, line);
+		return(pointer);
+	};
+
+	void __cdecl operator delete(void* p)
 	{
 		RemoveTrack((DWORD)p);
 		free(p);
 	};
+
+	void __cdecl operator delete[](void* p)
+	{
+		RemoveTrack((DWORD)p);
+		free(p);
+	};
+
 #endif
 
 #ifdef _DEBUG

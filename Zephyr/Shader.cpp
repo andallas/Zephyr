@@ -55,7 +55,7 @@ std::string Shader::ParseShaderFile(const GLchar* sourcePath)
 
 GLuint Shader::Compile(std::string& shaderCode, std::string type)
 {
-	GLuint shader;
+	GLuint shader = 0;
 	std::string path;
 
 	if (type == "VERTEX")

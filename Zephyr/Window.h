@@ -1,8 +1,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#define GLEW_STATIC
-#include <glew.h>
 #include <glfw3.h>
 
 class Window
