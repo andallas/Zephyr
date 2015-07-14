@@ -150,23 +150,27 @@
 		void* pointer = (void*)malloc(size);
 		if (!pointer)
 		{
-			std::bad_alloc ba;
-			throw ba;
+			AddTrack((DWORD)pointer, size, file, line);
+			return(pointer);
 		}
-		AddTrack((DWORD)pointer, size, file, line);
-		return(pointer);
+		else
+		{
+			throw std::bad_alloc();
+		}
 	};
 
 	void* __cdecl operator new[](size_t size, const char* file, int line)
 	{
 		void* pointer = (void*)malloc(size);
-		if (!pointer)
+		if (pointer)
 		{
-			std::bad_alloc ba;
-			throw ba;
+			AddTrack((DWORD)pointer, size, file, line);
+			return(pointer);
 		}
-		AddTrack((DWORD)pointer, size, file, line);
-		return(pointer);
+		else
+		{
+			throw std::bad_alloc();
+		}
 	};
 
 	void __cdecl operator delete(void* p)
