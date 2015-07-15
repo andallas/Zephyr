@@ -16,9 +16,9 @@ public:
 	void PreInitialization();
 	void PostInitialization(GLFWwindow* window);
 	static void ErrorCallback(int error, const char* description);
+	static int ErrorCode;
 
 private:
-	int _errorCode;
 	int _width;
 	int _height;
 };

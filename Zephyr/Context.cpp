@@ -18,7 +18,7 @@ void Context::PreInitialization()
 	if (!glfwInit())
 	{
 		std::cerr << "ERROR::MAIN::MAIN::GLFW_INIT_FAILED\n" << std::endl;
-		_errorCode = -1;
+		ErrorCode = -1;
 	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -34,7 +34,7 @@ void Context::PostInitialization(GLFWwindow* window)
 	{
 		std::cerr << "ERROR::MAIN::MAIN::CREATE_WINDOW_FAILED\n" << std::endl;
 		glfwTerminate();
-		_errorCode = -1;
+		ErrorCode = -1;
 	}
 
 	glfwMakeContextCurrent(window);
@@ -46,7 +46,7 @@ void Context::PostInitialization(GLFWwindow* window)
 	{
 		std::cerr << "ERROR::MAIN::MAIN::GLEW_INIT_FAILED\n" << glewGetErrorString(error) << std::endl;
 		glfwTerminate();
-		_errorCode = -1;
+		ErrorCode = -1;
 	}
 
 	glViewport(0, 0, _width, _height);
@@ -61,6 +61,5 @@ void Context::PostInitialization(GLFWwindow* window)
 void Context::ErrorCallback(int error, const char* description)
 {
 	std::cerr << "ERROR::GLFW_ERROR\n " << error << " - " << description << std::endl;
-	// TODO: Get gameManager instance, and call error function, passing in error code
-	//_errorCode = -1;
+	ErrorCode = -1;
 }

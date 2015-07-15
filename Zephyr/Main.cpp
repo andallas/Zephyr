@@ -19,7 +19,6 @@ void DoMovement();
 void CalculateTime();
 
 bool wireframeMode = false;
-int exitCode = 0;
 Window* window;
 Context* context;
 
@@ -51,10 +50,10 @@ int main()
 {
 	Initialization();
 
-	if (exitCode != 0)
+	if (Context::ErrorCode != 0)
 	{
 		glfwTerminate();
-		return exitCode;
+		return Context::ErrorCode;
 	}
 
 	// Build and compile shaders
@@ -195,7 +194,7 @@ int main()
 	std::cout << CurrentMemoryUsage() << std::endl;
 	DumpUnfreed();
 #endif
-	return exitCode;
+	return Context::ErrorCode;
 }
 
 void Initialization()
@@ -210,6 +209,7 @@ void Initialization()
 	// TODO: Move to input class
 	glfwSetInputMode(window->CurrentWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	// TODO: Move to input class
 	// Set callback functions
 	glfwSetKeyCallback(window->CurrentWindow(), KeyCallback);
 	glfwSetCursorPosCallback(window->CurrentWindow(), MouseCallback);
