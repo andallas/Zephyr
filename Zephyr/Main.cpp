@@ -191,10 +191,6 @@ int main()
 	delete window;
 	glfwTerminate();
 
-
-	Context* contexts[] = { new Context(100, 100), new Context(100, 100), new Context(100, 100) };
-	delete[] contexts;
-
 #ifdef _DEBUG
 	std::cout << CurrentMemoryUsage() << std::endl;
 	DumpUnfreed();

@@ -145,21 +145,8 @@
 		return results.str();
 	};
 
-	void* __cdecl operator new(size_t size, const char* file, int line)
-	{
-		void* pointer = (void*)malloc(size);
-		if (!pointer)
-		{
-			AddTrack((DWORD)pointer, size, file, line);
-			return(pointer);
-		}
-		else
-		{
-			throw std::bad_alloc();
-		}
-	};
-
-	void* __cdecl operator new[](size_t size, const char* file, int line)
+	inline void* operator new(size_t size, const char* file, int line)
+	//void* __cdecl operator new(size_t size, const char* file, int line)
 	{
 		void* pointer = (void*)malloc(size);
 		if (pointer)
@@ -173,13 +160,30 @@
 		}
 	};
 
-	void __cdecl operator delete(void* p)
+	inline void* operator new[](size_t size, const char* file, int line)
+	//void* __cdecl operator new[](size_t size, const char* file, int line)
+	{
+		void* pointer = (void*)malloc(size);
+		if (pointer)
+		{
+			AddTrack((DWORD)pointer, size, file, line);
+			return(pointer);
+		}
+		else
+		{
+			throw std::bad_alloc();
+		}
+	};
+
+	inline void operator delete(void* p)
+	//void __cdecl operator delete(void* p)
 	{
 		RemoveTrack((DWORD)p);
 		free(p);
 	};
 
-	void __cdecl operator delete[](void* p)
+	inline void operator delete[](void* p)
+	//void __cdecl operator delete[](void* p)
 	{
 		RemoveTrack((DWORD)p);
 		free(p);
