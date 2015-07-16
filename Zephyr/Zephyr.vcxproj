@@ -136,7 +136,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Clock.cpp" />
     <ClCompile Include="Context.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
@@ -144,7 +148,11 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Clock.h" />
     <ClInclude Include="Context.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="MemoryLeakDetector.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="TextureLoader.h" />
