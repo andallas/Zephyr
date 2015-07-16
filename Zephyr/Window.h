@@ -10,7 +10,7 @@ public:
 	~Window();
 
 	void Window::Initialize();
-	GLFWwindow* CurrentWindow();
+	GLFWwindow* GetWindow();
 
 private:
 	GLFWwindow* _window;

@@ -19,7 +19,7 @@ void Window::Initialize()
 	_window = glfwCreateWindow(_width, _height, _title, _monitor, _share);
 }
 
-GLFWwindow* Window::CurrentWindow()
+GLFWwindow* Window::GetWindow()
 {
 	return _window;
 }
