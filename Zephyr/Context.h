@@ -18,6 +18,8 @@ public:
 	static int ErrorCode;
 	// TODO: Accessors for width and height
 
+	bool isWireframeMode = false;
+
 private:
 	int _width;
 	int _height;

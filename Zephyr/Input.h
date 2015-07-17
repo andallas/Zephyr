@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <map>
+
 
 class Input
 {
@@ -14,7 +16,13 @@ public:
 	Input();
 	~Input();
 	void Initialize(GLFWwindow* window);
-	bool GetKey(GLuint keyCode);
+	void Update();
+	unsigned int GetKey(GLuint keyCode);
+	bool GetKeyPressed(GLuint keyCode);
+	bool GetKeyReleased(GLuint keyCode);
+	bool GetKeyDown(GLuint keyCode);
+	bool GetKeyHeld(GLuint keyCode);
+	bool GetKeyUp(GLuint keyCode);
 
 	static GLfloat GetMouseXOffset();
 	static GLfloat GetMouseYOffset();
@@ -26,13 +34,13 @@ public:
 	static void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
 	static bool isInverted;
-	static bool isWireframeMode;
 	static GLfloat mouseSensitivity;
 	static GLfloat scrollSensitivity;
 
 private:
 	static const GLuint _ARRAY_SIZE = 1024;
-	static bool _keys[];
+	static unsigned int _currentKeys[];
+	static unsigned int _previousKeys[];
 	static GLfloat _lastMouseX;
 	static GLfloat _lastMouseY;
 	static bool _isFirstMouse;

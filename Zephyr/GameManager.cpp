@@ -41,9 +41,9 @@ void GameManager::Initialization()
 
 	_context->PreInitialization();
 	_window->Initialize();
-	_context->PostInitialization(_window->GetWindow());
+	_context->PostInitialization(GameManager::Instance().CurrentWindow()->GetWindow());
 
-	_input->Initialize(_window->GetWindow());
+	_input->Initialize(GameManager::Instance().CurrentWindow()->GetWindow());
 }
 
 void GameManager::Run()
@@ -124,28 +124,43 @@ void GameManager::Run()
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 
-	/*
 	while (!glfwWindowShouldClose(GameManager::Instance().CurrentWindow()->GetWindow()))
 	{
-		// Check and call events
-		glfwPollEvents();
 		Clock::CalculateTime();
+
+		if (_input->GetKeyPressed(GLFW_KEY_ESCAPE))
+		{
+			glfwSetWindowShouldClose(GameManager::Instance().CurrentWindow()->GetWindow(), GL_TRUE);
+		}
+
+		if (_input->GetKeyPressed(GLFW_KEY_F1))
+		{
+			_context->isWireframeMode = !_context->isWireframeMode;
+			if (_context->isWireframeMode)
+			{
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			else
+			{
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+		}
+
 		
 		glm::vec3 direction;
-		if (_input->GetKey(GLFW_KEY_W))
+		if (_input->GetKeyDown(GLFW_KEY_W))
 		{
 			direction.x += 1.0f;
 		}
-		if (_input->GetKey(GLFW_KEY_S))
+		if (_input->GetKeyDown(GLFW_KEY_S))
 		{
 			direction.x -= 1.0f;
 		}
-
-		if (_input->GetKey(GLFW_KEY_A))
+		if (_input->GetKeyDown(GLFW_KEY_A))
 		{
 			direction.y += 1.0f;
 		}
-		if (_input->GetKey(GLFW_KEY_D))
+		if (_input->GetKeyDown(GLFW_KEY_D))
 		{
 			direction.y -= 1.0f;
 		}
@@ -209,8 +224,9 @@ void GameManager::Run()
 
 		// Swap buffers
 		glfwSwapBuffers(GameManager::Instance().CurrentWindow()->GetWindow());
+		_input->Update();
 	}
-	*/
+
 	glDeleteVertexArrays(1, &VAO);
 	//glDeleteBuffers(1, &IBO);
 	glDeleteBuffers(1, &VBO);
