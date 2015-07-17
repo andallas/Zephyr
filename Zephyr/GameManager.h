@@ -1,6 +1,8 @@
 #ifndef GAME_MANAGER_H
 #define GAME_MANAGER_H
 
+#define GLEW_STATIC
+#include <glew.h>
 #include <glfw3.h>
 
 #include <iostream>
@@ -8,6 +10,7 @@
 #include "Window.h"
 #include "Context.h"
 #include "Camera.h"
+#include "Clock.h"
 #include "Utility.h"
 #include "Shader.h"
 
@@ -25,13 +28,14 @@ public:
 	static GLuint GetHeight();
 
 private:
-	GameManager();
+	GameManager() {};
 	virtual ~GameManager();
 
 	static Window* _window;
 	static Context* _context;
 	static Input* _input;
 	static Camera* _camera;
+	static Clock* _clock;
 
 	static GLuint _width;
 	static GLuint _height;

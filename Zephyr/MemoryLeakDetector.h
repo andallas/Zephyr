@@ -10,7 +10,6 @@
 
 
 #ifdef _DEBUG
-
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 
 	typedef struct
@@ -70,6 +69,10 @@
 
 		if (!allocList)
 		{
+			sprintf_s(buffer, "+------------------------------------------------------------+\n"); OutputDebugString(buffer);
+			sprintf_s(buffer, "|                MEMORY LEAK DETECTOR OUTPUT                 |\n"); OutputDebugString(buffer);
+			sprintf_s(buffer, "+------------------------------------------------------------+\n"); OutputDebugString(buffer);
+			sprintf_s(buffer, "Allocation list is empty.\n"); OutputDebugString(buffer);
 			return;
 		}
 
@@ -105,14 +108,16 @@
 		DWORD totalSize = 0;
 		int leakCount = 0;
 
-		if (!allocList)
-		{
-			return "";
-		}
-
 		results << "+------------------------------------------------------------+\n";
 		results << "|                MEMORY LEAK DETECTOR OUTPUT                 |\n";
 		results << "+------------------------------------------------------------+\n";
+
+		if (!allocList)
+		{
+			results << "Allocation list is empty.\n";
+			return results.str();
+		}
+
 		for (i = allocList->begin(); i != allocList->end(); i++)
 		{
 			results << (*i)->file;
@@ -188,7 +193,6 @@
 		RemoveTrack((DWORD)p);
 		free(p);
 	};
-
 #endif
 
 #ifdef _DEBUG
@@ -197,6 +201,5 @@
 #define DEBUG_NEW new
 #endif
 #define new DEBUG_NEW
-
 
 #endif

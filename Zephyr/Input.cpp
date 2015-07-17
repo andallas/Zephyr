@@ -9,6 +9,10 @@ bool Input::_keys[_ARRAY_SIZE];
 GLfloat Input::_lastMouseX = 400;
 GLfloat Input::_lastMouseY = 300;
 bool Input::_isFirstMouse = true;
+GLfloat Input::_mouseXOffset = 0.0f;
+GLfloat Input::_mouseYOffset = 0.0f;
+GLfloat Input::_scrollXOffset = 0.0f;
+GLfloat Input::_scrollYOffset = 0.0f;
 
 
 Input::Input()

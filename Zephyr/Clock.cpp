@@ -10,3 +10,8 @@ void Clock::CalculateTime()
 	_deltaTime = currentFrame - _lastFrame;
 	_lastFrame = currentFrame;
 }
+
+GLfloat Clock::GetDeltaTime()
+{
+	return _deltaTime;
+}

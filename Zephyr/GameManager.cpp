@@ -1,6 +1,12 @@
 #include "GameManager.h"
 
 
+Window* GameManager::_window;
+Context* GameManager::_context;
+Input* GameManager::_input;
+Camera* GameManager::_camera;
+Clock* GameManager::_clock;
+
 GLuint GameManager::_width = 800;
 GLuint GameManager::_height = 600;
 char* GameManager::_title = "Zephyr";
@@ -10,6 +16,8 @@ GameManager::~GameManager()
 	delete _input;
 	delete _window;
 	delete _context;
+	delete _camera;
+	delete _clock;
 }
 
 GameManager& GameManager::Instance()
@@ -17,7 +25,6 @@ GameManager& GameManager::Instance()
 	static GameManager* instance = NULL;
 	if (instance == NULL)
 	{
-		Initialization();
 		instance = new GameManager();
 	}
 
@@ -29,6 +36,8 @@ void GameManager::Initialization()
 	_context = new Context(_width, _height);
 	_window = new Window(_width, _height, _title, nullptr, nullptr);
 	_input = new Input();
+	_camera = new Camera();
+	_clock = new Clock();
 
 	_context->PreInitialization();
 	_window->Initialize();
@@ -115,14 +124,34 @@ void GameManager::Run()
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 
+	/*
 	while (!glfwWindowShouldClose(GameManager::Instance().CurrentWindow()->GetWindow()))
 	{
 		// Check and call events
 		glfwPollEvents();
 		Clock::CalculateTime();
-		_camera->MoveCamera();
-		_camera->RotateCamera();
-		_camera->ZoomCamera();
+		
+		glm::vec3 direction;
+		if (_input->GetKey(GLFW_KEY_W))
+		{
+			direction.x += 1.0f;
+		}
+		if (_input->GetKey(GLFW_KEY_S))
+		{
+			direction.x -= 1.0f;
+		}
+
+		if (_input->GetKey(GLFW_KEY_A))
+		{
+			direction.y += 1.0f;
+		}
+		if (_input->GetKey(GLFW_KEY_D))
+		{
+			direction.y -= 1.0f;
+		}
+		_camera->MoveCamera(direction);
+		_camera->RotateCamera(_input->GetMouseXOffset(), _input->GetMouseYOffset(), _input->isInverted);
+		_camera->ZoomCamera(_input->GetScrollYOffset());
 
 		// Rendering
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -181,7 +210,7 @@ void GameManager::Run()
 		// Swap buffers
 		glfwSwapBuffers(GameManager::Instance().CurrentWindow()->GetWindow());
 	}
-
+	*/
 	glDeleteVertexArrays(1, &VAO);
 	//glDeleteBuffers(1, &IBO);
 	glDeleteBuffers(1, &VBO);
@@ -190,7 +219,6 @@ void GameManager::Run()
 
 void GameManager::Destroy()
 {
-	glfwDestroyWindow(_window->GetWindow());
 	glfwTerminate();
 	GameManager* gameManager = &Instance();
 	delete gameManager;

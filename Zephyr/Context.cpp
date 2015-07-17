@@ -1,6 +1,8 @@
 #include "Context.h"
 
 
+int Context::ErrorCode = 0;
+
 Context::Context(GLuint width, GLuint height)
 {
 	_width = width;
@@ -20,7 +22,7 @@ void Context::PreInitialization()
 		std::cerr << "ERROR::MAIN::MAIN::GLFW_INIT_FAILED\n" << std::endl;
 		ErrorCode = -1;
 	}
-
+	
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -36,7 +38,6 @@ void Context::PostInitialization(GLFWwindow* window)
 		glfwTerminate();
 		ErrorCode = -1;
 	}
-
 	glfwMakeContextCurrent(window);
 
 	glewExperimental = GL_TRUE;

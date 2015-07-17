@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "GameManager.h"
 
 Camera::Camera()
 {
@@ -9,33 +8,32 @@ Camera::~Camera()
 {
 }
 
-void Camera::MoveCamera()
+void Camera::MoveCamera(glm::vec3 direction)
 {
 	GLfloat cameraSensitivty = _cameraSpeed * Clock::GetDeltaTime();
 
-	if (GameManager::Instance().GetInput()->GetKey(GLFW_KEY_W))
+	if (direction.x > 0)
 	{
 		_cameraPos += cameraSensitivty * _cameraFront;
 	}
-	if (GameManager::Instance().GetInput()->GetKey(GLFW_KEY_S))
+	if (direction.x < 0)
 	{
 		_cameraPos -= cameraSensitivty * _cameraFront;
 	}
-
-	if (GameManager::Instance().GetInput()->GetKey(GLFW_KEY_A))
+	if (direction.y > 0)
 	{
 		_cameraPos -= glm::normalize(glm::cross(_cameraFront, _cameraUp)) * cameraSensitivty;
 	}
-	if (GameManager::Instance().GetInput()->GetKey(GLFW_KEY_D))
+	if (direction.y < 0)
 	{
 		_cameraPos += glm::normalize(glm::cross(_cameraFront, _cameraUp)) * cameraSensitivty;
 	}
 }
 
-void Camera::RotateCamera()
+void Camera::RotateCamera(GLfloat yaw, GLfloat pitch, bool isInverted)
 {
-	_yaw += GameManager::Instance().GetInput()->GetMouseXOffset();
-	_pitch += GameManager::Instance().GetInput()->GetMouseYOffset();
+	_yaw += yaw;
+	_pitch += pitch;
 
 	if (_pitch > 89.0f)
 	{
@@ -47,7 +45,7 @@ void Camera::RotateCamera()
 		_pitch = -89.0f;
 	}
 
-	bool inverted = GameManager::Instance().GetInput()->isInverted;
+	bool inverted = isInverted;
 
 	glm::vec3 front;
 	front.x = cos(glm::radians((inverted) ? _pitch : -_pitch)) * cos(glm::radians(_yaw));
@@ -56,11 +54,11 @@ void Camera::RotateCamera()
 	_cameraFront = glm::normalize(front);
 }
 
-void Camera::ZoomCamera()
+void Camera::ZoomCamera(GLfloat scrollOffset)
 {
 	if (_aspectRatio >= MIN_ASPECT && _aspectRatio <= MAX_ASPECT)
 	{
-		_aspectRatio -= GameManager::Instance().GetInput()->GetScrollYOffset();
+		_aspectRatio -= scrollOffset;
 	}
 	if (_aspectRatio <= MIN_ASPECT)
 	{

@@ -1,8 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <glfw3.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -15,9 +13,9 @@ class Camera
 public:
 	Camera();
 	~Camera();
-	void MoveCamera();
-	void RotateCamera();
-	void ZoomCamera();
+	void MoveCamera(glm::vec3 direction);
+	void RotateCamera(GLfloat yaw, GLfloat pitch, bool isInverted);
+	void ZoomCamera(GLfloat scrollOffset);
 	GLfloat GetNearPlane();
 	GLfloat GetFarPlane();
 	GLfloat GetAspectRatio();
