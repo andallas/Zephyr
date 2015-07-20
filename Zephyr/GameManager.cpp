@@ -146,6 +146,13 @@ void GameManager::Run()
 
 	// Load Textures
 	GLuint diffuseMap = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container2.png");
+	GLuint specularMap = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container2_specular.png");
+	GLuint emissionMap = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container2_emission.jpg");
+
+	defaultShader.Use();
+	glUniform1i(glGetUniformLocation(defaultShader.program, "material.diffuse"), 0);
+	glUniform1i(glGetUniformLocation(defaultShader.program, "material.specular"), 1);
+	glUniform1i(glGetUniformLocation(defaultShader.program, "material.emission"), 2);
 	
 
 	while (!glfwWindowShouldClose(GameManager::Instance().CurrentWindow()->GetWindow()))
@@ -239,6 +246,10 @@ void GameManager::Run()
 		// Bind diffuse map
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuseMap);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, specularMap);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, emissionMap);
 
 		// Draw the container
 		glBindVertexArray(VAO);
