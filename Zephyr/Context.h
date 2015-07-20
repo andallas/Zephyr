@@ -14,6 +14,7 @@ public:
 	~Context();
 	void PreInitialization();
 	void PostInitialization(GLFWwindow* window);
+	void SetClearColor(float red, float green, float blue);
 	static void ErrorCallback(int error, const char* description);
 	static int ErrorCode;
 	// TODO: Accessors for width and height

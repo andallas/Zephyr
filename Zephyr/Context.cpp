@@ -61,7 +61,12 @@ void Context::PostInitialization(GLFWwindow* window)
 	glFrontFace(GL_CCW);
 
 	// Set clear color
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+}
+
+void Context::SetClearColor(float red, float green, float blue)
+{
+	glClearColor(red, green, blue, 1.0f);
 }
 
 void Context::ErrorCallback(int error, const char* description)

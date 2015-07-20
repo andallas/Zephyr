@@ -187,22 +187,26 @@ void GameManager::Run()
 		// Lighting uniforms
 		defaultShader.Use();
 		GLint viewPosLocation = glGetUniformLocation(defaultShader.program, "viewPos");
-		GLint matAmbientLocation = glGetUniformLocation(defaultShader.program, "material.ambient");
-		GLint matDiffuseLocation = glGetUniformLocation(defaultShader.program, "material.diffuse");
-		GLint matSpecularLocation = glGetUniformLocation(defaultShader.program, "material.specular");
-		GLint matShininessLocation = glGetUniformLocation(defaultShader.program, "material.shininess");
-		GLint lightAmbientLocation = glGetUniformLocation(defaultShader.program, "light.ambient");
-		GLint lightDiffuseLocation = glGetUniformLocation(defaultShader.program, "light.diffuse");
-		GLint lightSpecularLocation = glGetUniformLocation(defaultShader.program, "light.specular");
-
+		GLint lightPosLocation = glGetUniformLocation(defaultShader.program, "light.position");
 		glUniform3f(viewPosLocation, _camera->GetPosition().x, _camera->GetPosition().y, _camera->GetPosition().z);
-		glUniform3f(matAmbientLocation, 1.0f, 0.5f, 0.31f);
-		glUniform3f(matDiffuseLocation, 1.0f, 0.5f, 0.31f);
-		glUniform3f(matSpecularLocation, 0.5f, 0.5f, 0.5f);
-		glUniform1f(matShininessLocation, 32.0f);
-		glUniform3f(lightAmbientLocation, 0.2f, 0.2f, 0.2f);
-		glUniform3f(lightDiffuseLocation, 0.5f, 0.5f, 0.5f);
-		glUniform3f(lightSpecularLocation, 1.0f, 1.0f, 1.0f);
+		glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
+
+		glm::vec3 lightColor;
+		lightColor.x = sin(glfwGetTime() * 2.0f);
+		lightColor.y = sin(glfwGetTime() * 0.7f);
+		lightColor.z = sin(glfwGetTime() * 1.3f);
+
+		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+		
+		glUniform3f(glGetUniformLocation(defaultShader.program, "light.ambient"), ambientColor.x, ambientColor.y, ambientColor.z);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "light.diffuse"), diffuseColor.x, diffuseColor.y, diffuseColor.z);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "light.specular"), 1.0f, 1.0f, 1.0f);
+
+		glUniform3f(glGetUniformLocation(defaultShader.program, "material.ambient"), 1.0f, 0.5f, 0.31f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "material.diffuse"), 1.0f, 0.5f, 0.31f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "material.specular"), 0.5f, 0.5f, 0.5f);
+		glUniform1f(glGetUniformLocation(defaultShader.program, "material.shininess"), 32.0f);
 
 		// Create matrices
 		glm::vec3 cameraPos = _camera->GetPosition();
