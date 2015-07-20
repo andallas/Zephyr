@@ -55,6 +55,11 @@ void Context::PostInitialization(GLFWwindow* window)
 	// Depth testing
 	glEnable(GL_DEPTH_TEST);
 
+	// Backface culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+
 	// Set clear color
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 }

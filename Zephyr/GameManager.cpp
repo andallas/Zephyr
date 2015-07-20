@@ -63,47 +63,53 @@ void GameManager::Run()
 	// Vertex data and buffer objects
 	GLfloat vertices[] =
 	{
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+		// Front
+		-0.5f,  0.5f,  0.5f,		 0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,		 0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,		 0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,		 0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,		 0.0f,  0.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,		 0.0f,  0.0f,  1.0f,
 
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+		// Back
+		 0.5f,  0.5f, -0.5f,		 0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,		 0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,		 0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,		 0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,		 0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,		 0.0f,  0.0f, -1.0f,
 
-		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+		// Left
+		-0.5f,  0.5f, -0.5f,		-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,		-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,		-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,		-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,		-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,		-1.0f,  0.0f,  0.0f,
 
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		// Right
+		 0.5f,  0.5f,  0.5f,		 1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,		 1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,		 1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,		 1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,		 1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,		 1.0f,  0.0f,  0.0f,
 
-		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+		// Top
+		-0.5f,  0.5f, -0.5f,		 0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,		 0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,		 0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,		 0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,		 0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,		 0.0f,  1.0f,  0.0f,
 
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
+		// Bottom
+		 0.5f, -0.5f, -0.5f,		 0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,		 0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,		 0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,		 0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,		 0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,		 0.0f, -1.0f,  0.0f
 	};
 
 	GLuint VBO, VAO;
@@ -180,14 +186,23 @@ void GameManager::Run()
 
 		// Lighting uniforms
 		defaultShader.Use();
-		GLint objectColorLocation = glGetUniformLocation(defaultShader.program, "objectColor");
-		GLint lightColorLocation = glGetUniformLocation(defaultShader.program, "lightColor");
-		GLint lightPosLocation = glGetUniformLocation(defaultShader.program, "lightPos");
 		GLint viewPosLocation = glGetUniformLocation(defaultShader.program, "viewPos");
-		glUniform3f(objectColorLocation, 1.0f, 0.5f, 0.31f);
-		glUniform3f(lightColorLocation, 0.5f, 0.5f, 0.5f);
-		glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
+		GLint matAmbientLocation = glGetUniformLocation(defaultShader.program, "material.ambient");
+		GLint matDiffuseLocation = glGetUniformLocation(defaultShader.program, "material.diffuse");
+		GLint matSpecularLocation = glGetUniformLocation(defaultShader.program, "material.specular");
+		GLint matShininessLocation = glGetUniformLocation(defaultShader.program, "material.shininess");
+		GLint lightAmbientLocation = glGetUniformLocation(defaultShader.program, "light.ambient");
+		GLint lightDiffuseLocation = glGetUniformLocation(defaultShader.program, "light.diffuse");
+		GLint lightSpecularLocation = glGetUniformLocation(defaultShader.program, "light.specular");
+
 		glUniform3f(viewPosLocation, _camera->GetPosition().x, _camera->GetPosition().y, _camera->GetPosition().z);
+		glUniform3f(matAmbientLocation, 1.0f, 0.5f, 0.31f);
+		glUniform3f(matDiffuseLocation, 1.0f, 0.5f, 0.31f);
+		glUniform3f(matSpecularLocation, 0.5f, 0.5f, 0.5f);
+		glUniform1f(matShininessLocation, 32.0f);
+		glUniform3f(lightAmbientLocation, 0.2f, 0.2f, 0.2f);
+		glUniform3f(lightDiffuseLocation, 0.5f, 0.5f, 0.5f);
+		glUniform3f(lightSpecularLocation, 1.0f, 1.0f, 1.0f);
 
 		// Create matrices
 		glm::vec3 cameraPos = _camera->GetPosition();
