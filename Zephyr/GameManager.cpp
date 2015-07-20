@@ -115,6 +115,19 @@ void GameManager::Run()
 		 0.5f, -0.5f, -0.5f,		 0.0f, -1.0f,  0.0f,		 0.0f,  1.0f
 	};
 
+	glm::vec3 cubePositions[] = {
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(2.0f, 5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f, 3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f, 2.0f, -2.5f),
+		glm::vec3(1.5f, 0.2f, -1.5f),
+		glm::vec3(-1.3f, 1.0f, -1.5f)
+	};
+
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -204,25 +217,18 @@ void GameManager::Run()
 		// Lighting uniforms
 		defaultShader.Use();
 		GLint viewPosLocation = glGetUniformLocation(defaultShader.program, "viewPos");
-		GLint lightPosLocation = glGetUniformLocation(defaultShader.program, "light.position");
+		GLint lightDirLocation = glGetUniformLocation(defaultShader.program, "light.direction");
+		//GLint lightPosLocation = glGetUniformLocation(defaultShader.program, "light.position"); // Not needed for directional light
 		glUniform3f(viewPosLocation, _camera->GetPosition().x, _camera->GetPosition().y, _camera->GetPosition().z);
-		glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
-
-		glm::vec3 lightColor;
-		lightColor.x = sin(glfwGetTime() * 2.0f);
-		lightColor.y = sin(glfwGetTime() * 0.7f);
-		lightColor.z = sin(glfwGetTime() * 1.3f);
-
-		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+		glUniform3f(lightDirLocation, -0.2f, -1.0f, -0.3f);
+		//glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z); // Not needed for directional light
 		
-		glUniform3f(glGetUniformLocation(defaultShader.program, "light.ambient"), ambientColor.x, ambientColor.y, ambientColor.z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "light.diffuse"), diffuseColor.x, diffuseColor.y, diffuseColor.z);
+		// Light properties
+		glUniform3f(glGetUniformLocation(defaultShader.program, "light.ambient"), 0.2f, 0.2f, 0.2f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "light.diffuse"), 0.5f, 0.5f, 0.5f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "light.specular"), 1.0f, 1.0f, 1.0f);
 
-		glUniform3f(glGetUniformLocation(defaultShader.program, "material.ambient"), 1.0f, 0.5f, 0.31f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "material.diffuse"), 1.0f, 0.5f, 0.31f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "material.specular"), 0.5f, 0.5f, 0.5f);
+		// Material properties
 		glUniform1f(glGetUniformLocation(defaultShader.program, "material.shininess"), 32.0f);
 
 		// Create matrices
@@ -253,29 +259,43 @@ void GameManager::Run()
 
 		// Draw the container
 		glBindVertexArray(VAO);
+
 		glm::mat4 modelMatrix;
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		// Single item
+		/*glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+		glBindVertexArray(0);*/
+
+		// Multiple items
+		for (GLuint i = 0; i < 10; i++)
+		{
+			modelMatrix = glm::mat4();
+			modelMatrix = glm::translate(modelMatrix, cubePositions[i]);
+			GLfloat angle = 20.0f * i;
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 
+		// Not using this with direction light
+		//lampShader.Use();
+		//modelLocation = glGetUniformLocation(lampShader.program, "model");
+		//viewLocation = glGetUniformLocation(lampShader.program, "view");
+		//projectionLocation = glGetUniformLocation(lampShader.program, "projection");
+		//glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+		//glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-		lampShader.Use();
-		modelLocation = glGetUniformLocation(lampShader.program, "model");
-		viewLocation = glGetUniformLocation(lampShader.program, "view");
-		projectionLocation = glGetUniformLocation(lampShader.program, "projection");
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+		//modelMatrix = glm::mat4();
+		//modelMatrix = glm::translate(modelMatrix, lightPos);
+		//modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
+		//glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-		modelMatrix = glm::mat4();
-		modelMatrix = glm::translate(modelMatrix, lightPos);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
-		// Draw the lamp
-		glBindVertexArray(lightVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+		//// Draw the lamp
+		//glBindVertexArray(lightVAO);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(0);
 
 		// Swap buffers
 		glfwSwapBuffers(GameManager::Instance().CurrentWindow()->GetWindow());
