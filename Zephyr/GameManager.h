@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "Clock.h"
 #include "Utility.h"
+#include "TextureLoader.h"
 #include "Shader.h"
 
 
