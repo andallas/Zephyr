@@ -121,10 +121,10 @@ void GameManager::Run()
 
 	glm::vec3 pointLightPositions[] =
 	{
-		glm::vec3(-4.0f,  2.5f, -3.0f),
-        glm::vec3(-2.0f,  2.5f, -3.0f),
-        glm::vec3( 2.0f,  2.5f, -3.0f),
-        glm::vec3( 4.0f,  2.5f, -3.0f)
+		glm::vec3(-4.0f,  0.5f, -3.0f),
+        glm::vec3(-2.0f,  0.5f, -3.0f),
+        glm::vec3( 2.0f,  0.5f, -3.0f),
+        glm::vec3( 4.0f,  0.5f, -3.0f)
 	};
 
 	GLfloat planeVertices[] = {
@@ -255,13 +255,13 @@ void GameManager::Run()
 
 		// Directional light
 		glUniform3f(glGetUniformLocation(defaultShader.program, "directionalLight.direction"), -0.2f,  -1.0f,  -0.3f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "directionalLight.ambient"),    0.05f,  0.05f,  0.05f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "directionalLight.diffuse"),    0.4f,   0.4f,   0.4f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "directionalLight.specular"),   0.5f,   0.5f,   0.5f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "directionalLight.ambient"),    0.01f,  0.01f,  0.01f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "directionalLight.diffuse"),    0.01f,  0.01f,  0.01f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "directionalLight.specular"),   0.01f,  0.01f,  0.01f);
 
 		// Point light 1
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].position"), pointLightPositions[0].x, pointLightPositions[0].y, pointLightPositions[0].z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].ambient"),    0.05f,  0.05f,  0.05f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].ambient"),    0.01f,  0.01f,  0.01f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].diffuse"),    0.8f,   0.8f,   0.8f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].specular"),   1.0f,   1.0f,   1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[0].constant"), 1.0f);
@@ -270,8 +270,8 @@ void GameManager::Run()
 		
 		// Point light 2
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].position"), pointLightPositions[1].x, pointLightPositions[1].y, pointLightPositions[1].z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].ambient"), 0.05f, 0.05f, 0.05f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].ambient"),	0.01f, 0.01f, 0.01f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].diffuse"),	0.8f, 0.8f, 0.8f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].specular"), 1.0f, 1.0f, 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[1].constant"), 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[1].linear"), 0.09f);
@@ -279,8 +279,8 @@ void GameManager::Run()
 
 		// Point light 3
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].position"), pointLightPositions[2].x, pointLightPositions[2].y, pointLightPositions[2].z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].ambient"), 0.05f, 0.05f, 0.05f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].ambient"),	0.05f, 0.05f, 0.05f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].diffuse"),	0.8f, 0.8f, 0.8f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].specular"), 1.0f, 1.0f, 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[2].constant"), 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[2].linear"), 0.09f);
@@ -288,8 +288,8 @@ void GameManager::Run()
 
 		// Point light 4
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].position"), pointLightPositions[3].x, pointLightPositions[3].y, pointLightPositions[3].z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].ambient"), 0.05f, 0.05f, 0.05f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].ambient"),	0.01f, 0.01f, 0.01f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].diffuse"),	0.8f, 0.8f, 0.8f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].specular"), 1.0f, 1.0f, 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[3].constant"), 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[3].linear"), 0.09f);
@@ -298,9 +298,9 @@ void GameManager::Run()
 		// Spot light
 		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.position"), _camera->GetPosition().x, _camera->GetPosition().y, _camera->GetPosition().z);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.direction"), _camera->GetFront().x, _camera->GetFront().y, _camera->GetFront().z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.diffuse"), 1.0f, 1.0f, 1.0f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.specular"), 1.0f, 1.0f, 1.0f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.ambient"),	0.01f, 0.01f, 0.01f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.diffuse"),	1.0f, 1.0f, 1.0f);
+		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.specular"),	1.0f, 1.0f, 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "spotLight.constant"), 1.0f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "spotLight.linear"), 0.09f);
 		glUniform1f(glGetUniformLocation(defaultShader.program, "spotLight.quadratic"), 0.032f);
