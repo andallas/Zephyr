@@ -114,25 +114,44 @@ void GameManager::Run()
 	};
 
 	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(2.0f, 5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f, 3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f, 2.0f, -2.5f),
-		glm::vec3(1.5f, 0.2f, -1.5f),
-		glm::vec3(-1.3f, 1.0f, -1.5f)
+		glm::vec3( 4.0f, 0.0f, -5.0f),
+		glm::vec3(-4.0f, 0.0f, -2.0f),
+		glm::vec3(-3.0f, 0.0f, -3.0f)
 	};
 
 	glm::vec3 pointLightPositions[] =
 	{
-		glm::vec3( 0.7f,  0.2f,  2.0f),
-		glm::vec3( 2.3f, -3.3f, -4.0f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
-		glm::vec3( 0.0f,  0.0f, -3.0f)
+		glm::vec3(-4.0f,  2.5f, -3.0f),
+        glm::vec3(-2.0f,  2.5f, -3.0f),
+        glm::vec3( 2.0f,  2.5f, -3.0f),
+        glm::vec3( 4.0f,  2.5f, -3.0f)
 	};
+
+	GLfloat planeVertices[] = {
+        // Positions           // Normals		  // Texture Coords
+        -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,   1.0f,  0.0f,
+        -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+         1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,   0.0f,  1.0f,
+ 
+         1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,   0.0f,  1.0f,
+         1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,   1.0f,  1.0f,
+        -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,   1.0f,  0.0f
+    };
+
+	// Setup plane VAO
+	GLuint planeVAO, planeVBO;
+	glGenVertexArrays(1, &planeVAO);
+	glGenBuffers(1, &planeVBO);
+	glBindVertexArray(planeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glBindVertexArray(0);
 
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
@@ -166,9 +185,13 @@ void GameManager::Run()
 	glBindVertexArray(0);
 
 	// Load Textures
-	GLuint diffuseMap = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container2.png");
-	GLuint specularMap = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container2_specular.png");
-	GLuint emissionMap = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container2_emission.jpg");
+	GLuint containerDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container.png", GL_SRGB);
+	GLuint containerSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container_specular.png", GL_RGB);
+	GLuint containerEmission = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container_emission.png", GL_RGB);
+	GLuint floorDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "floor.png", GL_SRGB);
+	GLuint floorSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "floor_specular.png", GL_RGB);
+	GLuint wallDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "wall.png", GL_SRGB);
+	GLuint wallSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "wall_specular.png", GL_RGB);
 
 	defaultShader.Use();
 	glUniform1i(glGetUniformLocation(defaultShader.program, "material.diffuse"), 0);
@@ -306,26 +329,112 @@ void GameManager::Run()
 
 		// Bind textures map
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, diffuseMap);
+		glBindTexture(GL_TEXTURE_2D, containerDiffuse);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, specularMap);
+		glBindTexture(GL_TEXTURE_2D, containerSpecular);
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, emissionMap);
+		glBindTexture(GL_TEXTURE_2D, containerEmission);
 
 		// Draw the containers
 		glBindVertexArray(VAO);
 
 		glm::mat4 modelMatrix;
-		for (GLuint i = 0; i < 10; i++)
+		for (GLuint i = 0; i < 3; i++)
 		{
 			modelMatrix = glm::mat4();
 			modelMatrix = glm::translate(modelMatrix, cubePositions[i]);
-			GLfloat angle = 20.0f * i;
-			modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBindVertexArray(0);
+
+
+
+
+
+
+
+
+
+		glBindVertexArray(planeVAO);
+
+		// Floor
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, floorDiffuse);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, floorSpecular);
+
+		modelMatrix = glm::mat4();
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(5.0f, 1.0f, 5.0f));
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -0.5f, -1.0f));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+
+		// Wall
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, wallDiffuse);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, wallSpecular);
+
+		modelMatrix = glm::mat4();
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(-5.0f,  1.5f, -5.0f));
+		GLfloat angle = 270.0f;
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f, 1.0f, 5.0f));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		modelMatrix = glm::mat4();
+		modelMatrix = glm::translate(modelMatrix, glm::vec3( 5.0f,  1.5f, -5.0f));
+		angle = 90.0f;
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f, 1.0f, 5.0f));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		modelMatrix = glm::mat4();
+		modelMatrix = glm::translate(modelMatrix, glm::vec3( 0.0f,  1.5f, -10.0f));
+		angle = 90.0f;
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f, 1.0f, 5.0f));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBindVertexArray(0);
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		// New shader
 		lampShader.Use();

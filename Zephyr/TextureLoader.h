@@ -8,7 +8,7 @@
 class TextureLoader
 {
 public:
-	static GLuint LoadTexture(std::string texturePath);
+	static GLuint LoadTexture(std::string texturePath , GLint textureFormat);
 };
 
 #endif
