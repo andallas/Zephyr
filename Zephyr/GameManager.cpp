@@ -121,10 +121,7 @@ void GameManager::Run()
 
 	glm::vec3 pointLightPositions[] =
 	{
-		glm::vec3(-4.0f,  0.5f, -3.0f),
-        glm::vec3(-2.0f,  0.5f, -3.0f),
-        glm::vec3( 2.0f,  0.5f, -3.0f),
-        glm::vec3( 4.0f,  0.5f, -3.0f)
+		glm::vec3(0.0f, 0.5f, -3.0f)
 	};
 
 	GLfloat planeVertices[] = {
@@ -264,36 +261,9 @@ void GameManager::Run()
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].ambient"),    0.01f,  0.01f,  0.01f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].diffuse"),    0.8f,   0.8f,   0.8f);
 		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[0].specular"),   1.0f,   1.0f,   1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[0].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[0].linear"), 0.09f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[0].quadratic"), 0.032f);
-		
-		// Point light 2
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].position"), pointLightPositions[1].x, pointLightPositions[1].y, pointLightPositions[1].z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].ambient"),	0.01f, 0.01f, 0.01f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].diffuse"),	0.8f, 0.8f, 0.8f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[1].specular"), 1.0f, 1.0f, 1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[1].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[1].linear"), 0.09f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[1].quadratic"), 0.032f);
-
-		// Point light 3
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].position"), pointLightPositions[2].x, pointLightPositions[2].y, pointLightPositions[2].z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].ambient"),	0.05f, 0.05f, 0.05f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].diffuse"),	0.8f, 0.8f, 0.8f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[2].specular"), 1.0f, 1.0f, 1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[2].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[2].linear"), 0.09f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[2].quadratic"), 0.032f);
-
-		// Point light 4
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].position"), pointLightPositions[3].x, pointLightPositions[3].y, pointLightPositions[3].z);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].ambient"),	0.01f, 0.01f, 0.01f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].diffuse"),	0.8f, 0.8f, 0.8f);
-		glUniform3f(glGetUniformLocation(defaultShader.program, "pointLights[3].specular"), 1.0f, 1.0f, 1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[3].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[3].linear"), 0.09f);
-		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[3].quadratic"), 0.032f);
+		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[0].constant"),   1.0f);
+		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[0].linear"),	  0.09f);
+		glUniform1f(glGetUniformLocation(defaultShader.program, "pointLights[0].quadratic"),  0.032f);
 
 		// Spot light
 		glUniform3f(glGetUniformLocation(defaultShader.program, "spotLight.position"), _camera->GetPosition().x, _camera->GetPosition().y, _camera->GetPosition().z);
@@ -356,17 +326,8 @@ void GameManager::Run()
 
 		glBindVertexArray(0);
 
-
-
-
-
-
-
-
-
-		glBindVertexArray(planeVAO);
-
 		// Floor
+		glBindVertexArray(planeVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, floorDiffuse);
 		glActiveTexture(GL_TEXTURE1);
@@ -383,8 +344,7 @@ void GameManager::Run()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-
-		// Wall
+		// Walls
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, wallDiffuse);
 		glActiveTexture(GL_TEXTURE1);
@@ -424,19 +384,7 @@ void GameManager::Run()
 		
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-		// New shader
+		// Lamp
 		lampShader.Use();
 		
 		// Get location objects from matrices on shader
@@ -450,14 +398,13 @@ void GameManager::Run()
 
 		// Draw the point light objects
 		glBindVertexArray(lightVAO);
-		for (GLuint i = 0; i < 4; i++)
-		{
-			modelMatrix = glm::mat4();
-			modelMatrix = glm::translate(modelMatrix, pointLightPositions[i]);
-			modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
-			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		
+		modelMatrix = glm::mat4();
+		modelMatrix = glm::translate(modelMatrix, pointLightPositions[0]);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		glBindVertexArray(0);
 
 		// Swap buffers
