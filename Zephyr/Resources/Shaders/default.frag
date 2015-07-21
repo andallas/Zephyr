@@ -81,6 +81,11 @@ void main()
 	// Spot Light
 	result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
+	// Emission
+	vec3 emission = vec3(texture(material.emission, TexCoords));
+
+	result += emission;
+
 	color = vec4(result, 1.0);
 }
 
@@ -99,9 +104,6 @@ vec3 CalcDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir)
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
 	vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
-
-	// Emission
-	//vec3 emission = vec3(texture(material.emission, TexCoords));
 
 	return (ambient + diffuse + specular);
 }
@@ -125,7 +127,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
 	vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
-	//vec3 emission = vec3(texture(material.emission, TexCoords));
 
 	ambient *= attenuation;
 	diffuse *= attenuation;
