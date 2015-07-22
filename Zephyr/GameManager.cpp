@@ -298,12 +298,9 @@ void GameManager::Run()
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 		// Bind textures map
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, containerDiffuse);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, containerSpecular);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, containerEmission);
+		BindTexture(GL_TEXTURE0, containerDiffuse);
+		BindTexture(GL_TEXTURE1, containerSpecular);
+		BindTexture(GL_TEXTURE2, containerEmission);
 
 		// Draw the containers
 		glBindVertexArray(VAO);
@@ -317,21 +314,17 @@ void GameManager::Run()
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		UnBindTexture(GL_TEXTURE0);
+		UnBindTexture(GL_TEXTURE1);
+		UnBindTexture(GL_TEXTURE2);
 
 		glBindVertexArray(0);
 
 		// Floor
 		glBindVertexArray(planeVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, floorDiffuse);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, floorSpecular);
+
+		BindTexture(GL_TEXTURE0, floorDiffuse);
+		BindTexture(GL_TEXTURE1, floorSpecular);
 
 		modelMatrix = glm::mat4();
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(5.0f, 1.0f, 5.0f));
@@ -339,16 +332,12 @@ void GameManager::Run()
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		UnBindTexture(GL_TEXTURE0);
+		UnBindTexture(GL_TEXTURE1);
 
 		// Walls
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, wallDiffuse);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, wallSpecular);
+		BindTexture(GL_TEXTURE0, wallDiffuse);
+		BindTexture(GL_TEXTURE1, wallSpecular);
 
 		modelMatrix = glm::mat4();
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(-5.0f,  1.5f, -5.0f));
@@ -375,10 +364,9 @@ void GameManager::Run()
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, 0);
+
+		UnBindTexture(GL_TEXTURE0);
+		UnBindTexture(GL_TEXTURE1);
 
 		glBindVertexArray(0);
 		
@@ -443,4 +431,17 @@ GLuint GameManager::GetWidth()
 GLuint GameManager::GetHeight()
 {
 	return _height;
+}
+
+// Private
+void GameManager::BindTexture(GLint textureLocation, GLuint textureID)
+{
+	glActiveTexture(textureLocation);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+void GameManager::UnBindTexture(GLint textureLocation)
+{
+	glActiveTexture(textureLocation);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
