@@ -23,3 +23,8 @@ std::string Utility::ImageDirectory()
 {
 	return (BaseDirectory() + "Resources\\Images\\");
 }
+
+std::string Utility::ModelDirectory()
+{
+	return (BaseDirectory() + "Resources\\Models\\");
+}

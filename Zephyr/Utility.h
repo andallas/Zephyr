@@ -10,6 +10,7 @@ public:
 	static std::string BaseDirectory();
 	static std::string ShaderDirectory();
 	static std::string ImageDirectory();
+	static std::string ModelDirectory();
 };
 
 #endif

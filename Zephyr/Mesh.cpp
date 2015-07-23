@@ -1,17 +1,44 @@
 #include "Mesh.h"
 
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures)
+Mesh::Mesh(const char* path)
 {
+	std::vector<glm::vec3> v;
+	std::vector<glm::vec2> tc;
+	std::vector<glm::vec3> n;
+
+	ModelLoader::LoadOBJ(path, v, tc, n);
+
+	for (int i = 0; i < this->vertices.size(); i++)
+	{
+		this->vertices.push_back(Vertex(v[i], n[i], tc[i]));
+	}
+
+	this->SetupMesh();
+}
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Texture> textures)
+{
+	this->vertices = vertices;
+	this->textures = textures;
+	this->SetupMesh();
+}
+
+Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> texCoords, std::vector<Texture> textures)
+{
+	for (int i = 0; i < this->vertices.size(); i++)
+	{
+		this->vertices.push_back(Vertex(vertices[i], normals[i], texCoords[i]));
+	}
+	this->textures = textures;
+
+	this->SetupMesh();
 }
 
 Mesh::~Mesh()
 {
-}
-
-void Mesh::Draw(Shader shader)
-{
-
+	glDeleteVertexArrays(1, &this->_VAO);
+	glDeleteBuffers(1, &this->_VBO);
 }
 
 // Private
@@ -25,10 +52,7 @@ void Mesh::SetupMesh()
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->_VBO);
 
-	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &this->vertices[0], GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), this->vertices.data(), GL_STATIC_DRAW);
 
 	// Positions
 	glEnableVertexAttribArray(0);
