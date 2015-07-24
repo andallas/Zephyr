@@ -49,8 +49,8 @@ struct SpotLight
 
 in VS_OUT
 {
-	vec3 FragPos;
 	vec3 Normal;
+	vec3 FragPos;
 	vec2 TexCoords;
 } fs_in;
 

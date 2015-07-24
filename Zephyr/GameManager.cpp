@@ -72,6 +72,8 @@ void GameManager::Run()
 	testMesh->textures.push_back(Texture(containerSpecular, Texture::TextureType::Specular));
 	testMesh->textures.push_back(Texture(containerEmission, Texture::TextureType::Emission));
 
+	std::cout << testMesh->vertices.size() << std::endl;
+
 	defaultShader.Use();
 	glUniform1i(glGetUniformLocation(defaultShader.program, "material.diffuse"), 0);
 	glUniform1i(glGetUniformLocation(defaultShader.program, "material.specular"), 1);
@@ -185,8 +187,10 @@ void GameManager::Run()
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-		//testMesh->Bind();
-		//glUniform1i(glGetUniformLocation(defaultShader.program, "material.diffuse"), 0);
+		testMesh->Bind();
+		glUniform1i(glGetUniformLocation(defaultShader.program, "material.diffuse"), 0);
+		glUniform1i(glGetUniformLocation(defaultShader.program, "material.specular"), 1);
+		glUniform1i(glGetUniformLocation(defaultShader.program, "material.emission"), 2);
 
 		glm::mat4 modelMatrix;
 		modelMatrix = glm::mat4();

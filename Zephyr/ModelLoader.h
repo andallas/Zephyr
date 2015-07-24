@@ -20,7 +20,7 @@ public:
 	static bool LoadOBJ(const char* path, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outTexCoords, std::vector<glm::vec3>& outNormals);
 
 private:
-	static bool Parse(std::string line, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outTexCoords, std::vector<glm::vec3>& outNormals);
+	static bool Parse(std::ifstream& file, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outTexCoords, std::vector<glm::vec3>& outNormals);
 	static std::vector<std::string> Split(std::string str, char delimeter);
 };
 
