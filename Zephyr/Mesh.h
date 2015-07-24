@@ -21,11 +21,16 @@ struct Vertex
 
 struct Texture
 {
+	enum class TextureType
+	{
+		Diffuse, Specular, Emission
+	};
+
 	GLuint id;
-	std::string type;
+	TextureType type;
 
 	Texture() : id(), type() {}
-	Texture(GLuint _id, std::string _type) : id(_id), type(_type) {}
+	Texture(GLuint _id, TextureType _type) : id(_id), type(_type) {}
 };
 
 class Mesh
@@ -35,15 +40,18 @@ public:
 	Mesh(std::vector<Vertex> vertices, std::vector<Texture> textures);
 	Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> texCoords, std::vector<Texture> textures);
 	~Mesh();
+	void Bind();
+
 	std::vector<Vertex> vertices;
 	std::vector<Texture> textures;
 
 private:
+	void SetupMesh();
+	void BindTexture(GLint textureLocation, GLuint textureID);
+	void UnBindTexture(GLint textureLocation);
+
 	GLuint _VAO;
 	GLuint _VBO;
-	GLuint _IBO;
-
-	void SetupMesh();
 };
 
 #endif

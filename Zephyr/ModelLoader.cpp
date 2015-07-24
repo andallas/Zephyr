@@ -48,51 +48,98 @@ bool ModelLoader::Parse(std::string line, std::vector<glm::vec3>& outVertices, s
 	std::vector<glm::vec2> tempTexCoords;
 	std::vector<glm::vec3> tempNormals;
 
+	std::vector<std::string> elements;
+
 	// Vertices
-	if (line.substr(0) == "v")
+	if (line.substr(0, 2) == "v ")
 	{
 		glm::vec3 vertex;
-		// http://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c 
-		fscanf_s(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+		elements = Split(line, ' ');
+		if (elements.size() != 4)
+		{
+			return false;
+		}
+
+		vertex.x = std::stof(elements[1]);
+		vertex.y = std::stof(elements[2]);
+		vertex.z = std::stof(elements[3]);
 		tempVertices.push_back(vertex);
 	}
 	// Texture coordinates
 	else if (line.substr(0, 2) == "vt")
 	{
 		glm::vec2 texCoord;
-		fscanf_s(file, "%f %f\n", &texCoord.x, &texCoord.y);
+		elements = Split(line, ' ');
+		if (elements.size() != 3)
+		{
+			return false;
+		}
+
+		texCoord.x = std::stof(elements[1]);
+		texCoord.y = std::stof(elements[2]);
 		tempTexCoords.push_back(texCoord);
 	}
 	// Normals
 	else if (line.substr(0, 2) == "vn")
 	{
 		glm::vec3 normal;
-		fscanf_s(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
-		tempNormals.push_back(normal);
-	}
-	// Faces
-	else if (line.substr(0) == "f")
-	{
-		std::string vertex1, vertex2, vertex3;
-		unsigned int vertexIndex[3], texCoordIndex[3], normalIndex[3];
-		int matches = fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &vertexIndex[1], &vertexIndex[2], &texCoordIndex[0], &texCoordIndex[1], &texCoordIndex[2], &normalIndex[0], &normalIndex[1], &normalIndex[2]);
-
-		if (matches != 9)
+		elements = Split(line, ' ');
+		if (elements.size() != 4)
 		{
 			return false;
 		}
 
-		vertexIndices.push_back(vertexIndex[0]);
-		vertexIndices.push_back(vertexIndex[1]);
-		vertexIndices.push_back(vertexIndex[2]);
+		normal.x = std::stof(elements[1]);
+		normal.y = std::stof(elements[2]);
+		normal.z = std::stof(elements[3]);
+		tempNormals.push_back(normal);
+	}
+	// Faces
+	else if (line.substr(0, 2) == "f ")
+	{
+		std::string vertex1, vertex2, vertex3;
+		unsigned int vertexIndex[3], texCoordIndex[3], normalIndex[3];
 
-		texCoordIndices.push_back(texCoordIndex[0]);
-		texCoordIndices.push_back(texCoordIndex[1]);
-		texCoordIndices.push_back(texCoordIndex[2]);
+		elements = Split(line, ' ');
+		if (elements.size() != 4)
+		{
+			return false;
+		}
 
-		normalIndices.push_back(normalIndex[0]);
-		normalIndices.push_back(normalIndex[1]);
-		normalIndices.push_back(normalIndex[2]);
+		elements.erase(elements.begin());
+		int length = elements.size();
+		std::vector<std::string> temp;
+		std::vector<std::string> indices;
+
+		for (int i = 0; i < length; i++)
+		{
+			temp = Split(elements[i], '/');
+
+			if (elements.size() != 3)
+			{
+				return false;
+			}
+
+			indices.insert(indices.end(), temp.begin(), temp.end());
+		}
+
+		if (indices.size() != 9)
+		{
+			std::cout << indices.size() << std::endl;
+			return false;
+		}
+
+		vertexIndices.push_back(std::stof(indices[0]));
+		vertexIndices.push_back(std::stof(indices[1]));
+		vertexIndices.push_back(std::stof(indices[2]));
+
+		texCoordIndices.push_back(std::stof(indices[3]));
+		texCoordIndices.push_back(std::stof(indices[4]));
+		texCoordIndices.push_back(std::stof(indices[5]));
+
+		normalIndices.push_back(std::stof(indices[6]));
+		normalIndices.push_back(std::stof(indices[7]));
+		normalIndices.push_back(std::stof(indices[8]));
 	}
 
 	unsigned int i;
@@ -122,4 +169,20 @@ bool ModelLoader::Parse(std::string line, std::vector<glm::vec3>& outVertices, s
 	}
 
 	return true;
+}
+
+std::vector<std::string> ModelLoader::Split(std::string str, char delimeter)
+{
+	std::vector<std::string> elements;
+	std::stringstream ss(str);
+	std::string item;
+
+	while (std::getline(ss, item, delimeter))
+	{
+		if (!item.empty())
+		{
+			elements.push_back(item);
+		}
+	}
+	return elements;
 }

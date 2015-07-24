@@ -32,8 +32,6 @@ public:
 private:
 	GameManager() {};
 	virtual ~GameManager();
-	static void BindTexture(GLint textureLocation, GLuint textureID);
-	static void UnBindTexture(GLint textureLocation);
 
 	static Window* _window;
 	static Context* _context;

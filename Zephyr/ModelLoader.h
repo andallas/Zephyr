@@ -21,6 +21,7 @@ public:
 
 private:
 	static bool Parse(std::string line, std::vector<glm::vec3>& outVertices, std::vector<glm::vec2>& outTexCoords, std::vector<glm::vec3>& outNormals);
+	static std::vector<std::string> Split(std::string str, char delimeter);
 };
 
 #endif

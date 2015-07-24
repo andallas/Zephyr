@@ -7,9 +7,12 @@ Mesh::Mesh(const char* path)
 	std::vector<glm::vec2> tc;
 	std::vector<glm::vec3> n;
 
-	ModelLoader::LoadOBJ(path, v, tc, n);
+	if (!ModelLoader::LoadOBJ(path, v, tc, n))
+	{
+		std::cerr << "ERROR::MESH::MESH_FAILED_TO_LOAD" << std::endl;
+	}
 
-	for (int i = 0; i < this->vertices.size(); i++)
+	for (int i = 0; i < v.size(); i++)
 	{
 		this->vertices.push_back(Vertex(v[i], n[i], tc[i]));
 	}
@@ -41,12 +44,20 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &this->_VBO);
 }
 
+void Mesh::Bind()
+{
+	glBindVertexArray(this->_VAO);
+
+	BindTexture(GL_TEXTURE0, this->textures[0].id);
+	BindTexture(GL_TEXTURE1, this->textures[1].id);
+	BindTexture(GL_TEXTURE2, this->textures[2].id);
+}
+
 // Private
 void Mesh::SetupMesh()
 {
 	glGenVertexArrays(1, &this->_VAO);
 	glGenBuffers(1, &this->_VBO);
-	glGenBuffers(1, &this->_IBO);
 
 	glBindVertexArray(this->_VAO);
 
@@ -67,4 +78,16 @@ void Mesh::SetupMesh()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
 
 	glBindVertexArray(0);
+}
+
+void Mesh::BindTexture(GLint textureLocation, GLuint textureID)
+{
+	glActiveTexture(textureLocation);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+void Mesh::UnBindTexture(GLint textureLocation)
+{
+	glActiveTexture(textureLocation);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
