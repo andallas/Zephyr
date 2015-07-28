@@ -11,41 +11,6 @@ GLuint GameManager::_width = 800;
 GLuint GameManager::_height = 600;
 char* GameManager::_title = "Zephyr";
 
-GameManager::~GameManager()
-{
-	delete _input;
-	delete _window;
-	delete _context;
-	delete _camera;
-	delete _clock;
-}
-
-GameManager& GameManager::Instance()
-{
-	static GameManager* instance = NULL;
-	if (instance == NULL)
-	{
-		instance = new GameManager();
-	}
-
-	return *instance;
-}
-
-void GameManager::Initialization()
-{
-	_context = new Context(_width, _height);
-	_window = new Window(_width, _height, _title, nullptr, nullptr);
-	_input = new Input();
-	_camera = new Camera();
-	_clock = new Clock();
-
-	_context->PreInitialization();
-	_window->Initialize();
-	_context->PostInitialization(GameManager::Instance().CurrentWindow()->GetWindow());
-
-	_input->Initialize(GameManager::Instance().CurrentWindow()->GetWindow());
-}
-
 void GameManager::Run()
 {
 	if (Context::ErrorCode != 0)
@@ -54,6 +19,19 @@ void GameManager::Run()
 		return;
 	}
 
+	while (!glfwWindowShouldClose(GameManager::Instance().CurrentWindow()->GetWindow()))
+	{
+		Clock::CalculateTime();
+
+		_renderer->Render(_camera);
+
+		glfwSwapBuffers(GameManager::Instance().CurrentWindow()->GetWindow());
+
+		_input->Update();
+	}
+
+
+	/*
 	// Build and compile shaders
 	Shader defaultShader((Utility::ShaderDirectory() + "default.vert").c_str(), (Utility::ShaderDirectory() + "default.frag").c_str());
 	Shader lampShader((Utility::ShaderDirectory() + "lamp.vert").c_str(), (Utility::ShaderDirectory() + "lamp.frag").c_str());
@@ -62,10 +40,10 @@ void GameManager::Run()
 	GLuint containerDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container.png", GL_SRGB);
 	GLuint containerSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container_specular.png", GL_RGB);
 	GLuint containerEmission = TextureLoader::LoadTexture(Utility::ImageDirectory() + "container_emission.png", GL_RGB);
-	/*GLuint floorDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "floor.png", GL_SRGB);
-	GLuint floorSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "floor_specular.png", GL_RGB);
-	GLuint wallDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "wall.png", GL_SRGB);
-	GLuint wallSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "wall_specular.png", GL_RGB);*/
+	//GLuint floorDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "floor.png", GL_SRGB);
+	//GLuint floorSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "floor_specular.png", GL_RGB);
+	//GLuint wallDiffuse = TextureLoader::LoadTexture(Utility::ImageDirectory() + "wall.png", GL_SRGB);
+	//GLuint wallSpecular = TextureLoader::LoadTexture(Utility::ImageDirectory() + "wall_specular.png", GL_RGB);
 
 	Mesh* testMesh = new Mesh((Utility::ModelDirectory() + "cube.obj").c_str());
 	testMesh->textures.push_back(Texture(containerDiffuse, Texture::TextureType::Diffuse));
@@ -206,6 +184,7 @@ void GameManager::Run()
 	//glDeleteVertexArrays(1, &VAO);
 	//glDeleteBuffers(1, &VBO);
 	glfwTerminate();
+	*/
 }
 
 void GameManager::Destroy()
@@ -233,4 +212,50 @@ GLuint GameManager::GetWidth()
 GLuint GameManager::GetHeight()
 {
 	return _height;
+}
+
+// Private
+GameManager::~GameManager()
+{
+	delete _input;
+
+	glfwDestroyWindow(_window->GetWindow());
+	delete _window;
+
+	delete _context;
+	glfwTerminate();
+
+	delete _camera;
+
+	delete _clock;
+}
+
+GameManager& GameManager::Instance()
+{
+	static GameManager* instance = NULL;
+	if (instance == NULL)
+	{
+		GameManager::Initialization();
+
+		instance = new GameManager();
+	}
+
+	return *instance;
+}
+
+void GameManager::Initialization()
+{
+	_context = new Context(_width, _height);
+	_window = new Window(_width, _height, _title, nullptr, nullptr);
+	_input = new Input();
+	_camera = new Camera();
+	_clock = new Clock();
+
+	_context->PreInitialization();
+	_window->Initialize();
+	_context->PostInitialization(GameManager::Instance().CurrentWindow()->GetWindow());
+
+	//_input->Initialize(GameManager::Instance().CurrentWindow()->GetWindow());
+	_input = &Input::Instance();
+	_renderer = &Renderer::Instance();
 }

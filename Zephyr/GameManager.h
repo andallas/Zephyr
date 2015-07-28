@@ -15,13 +15,13 @@
 #include "TextureLoader.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Renderer.h"
 
 
 class GameManager
 {
 public:
 	static GameManager& Instance();
-	static void Initialization();
 	static void Run();
 	static void Destroy();
 	static Window* CurrentWindow();
@@ -32,12 +32,14 @@ public:
 private:
 	GameManager() {};
 	virtual ~GameManager();
+	static void Initialization();
 
 	static Window* _window;
 	static Context* _context;
 	static Input* _input;
 	static Camera* _camera;
 	static Clock* _clock;
+	static Renderer* _renderer;
 
 	static GLuint _width;
 	static GLuint _height;
