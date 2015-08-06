@@ -23,6 +23,23 @@ Input::~Input()
 {
 }
 
+Input& Input::Instance()
+{
+	static Input* instance = NULL;
+	if (instance == NULL)
+	{
+		instance = new Input();
+	}
+
+	return *instance;
+}
+
+void Input::Destroy()
+{
+	Input* input = &Instance();
+	delete input;
+}
+
 void Input::Initialize(GLFWwindow* window)
 {
 	for (int i = 0; i < _ARRAY_SIZE; i++)

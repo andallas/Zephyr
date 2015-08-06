@@ -1,6 +1,15 @@
-#include "TextureLoader.h"
+#include "Tex.h"
 
-GLuint TextureLoader::LoadTexture(std::string texturePath, GLint textureFormat)
+
+Tex::Tex() { }
+
+
+Tex::~Tex()
+{
+	glDeleteTextures(1, &texture);
+}
+
+void Tex::Init(const std::string& texturePath, GLint textureFormat)
 {
 	GLuint texture;
 	glGenTextures(1, &texture);
@@ -19,7 +28,12 @@ GLuint TextureLoader::LoadTexture(std::string texturePath, GLint textureFormat)
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	SOIL_free_image_data(image);
-	glBindTexture(GL_TEXTURE_2D, 0);
 
-	return texture;
+	this->texture = texture;
+}
+
+void Tex::Bind(unsigned int unit)
+{
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(GL_TEXTURE_2D, this->texture);
 }

@@ -217,8 +217,6 @@ GLuint GameManager::GetHeight()
 // Private
 GameManager::~GameManager()
 {
-	delete _input;
-
 	glfwDestroyWindow(_window->GetWindow());
 	delete _window;
 
@@ -228,6 +226,9 @@ GameManager::~GameManager()
 	delete _camera;
 
 	delete _clock;
+
+	_renderer->Destroy();
+	_input->Destroy();
 }
 
 GameManager& GameManager::Instance()
@@ -247,7 +248,6 @@ void GameManager::Initialization()
 {
 	_context = new Context(_width, _height);
 	_window = new Window(_width, _height, _title, nullptr, nullptr);
-	_input = new Input();
 	_camera = new Camera();
 	_clock = new Clock();
 
@@ -255,7 +255,7 @@ void GameManager::Initialization()
 	_window->Initialize();
 	_context->PostInitialization(GameManager::Instance().CurrentWindow()->GetWindow());
 
-	//_input->Initialize(GameManager::Instance().CurrentWindow()->GetWindow());
 	_input = &Input::Instance();
+	_input->Initialize(GameManager::Instance().CurrentWindow()->GetWindow());
 	_renderer = &Renderer::Instance();
 }

@@ -1,11 +1,13 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Camera.h"
 #include "Shader.h"
-#include "Texture.h"
+#include "Tex.h"
 #include "Mesh.h"
 #include "Transform.h"
+#include <glew.h>
+#include <iostream>
+#include "Context.h"
 
 
 class Renderer
@@ -21,7 +23,7 @@ private:
 	static void Initialization();
 
 	static Shader _shader;
-	static Texture _texture;
+	static Tex _texture;
 	static Mesh _mesh;
 	static Transform _transform;
 };

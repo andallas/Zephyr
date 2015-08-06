@@ -148,7 +148,7 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="Tex.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -163,7 +163,8 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="Tex.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

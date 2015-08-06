@@ -13,8 +13,8 @@
 class Input
 {
 public:
-	Input();
-	~Input();
+	static Input& Instance();
+	static void Destroy();
 	void Initialize(GLFWwindow* window);
 	void Update();
 	unsigned int GetKey(GLuint keyCode);
@@ -38,6 +38,9 @@ public:
 	static GLfloat scrollSensitivity;
 
 private:
+	Input();
+	virtual ~Input();
+
 	static const GLuint _ARRAY_SIZE = 1024;
 	static unsigned int _currentKeys[];
 	static unsigned int _previousKeys[];

@@ -4,7 +4,6 @@
 int main()
 {
 	GameManager* gameManager = &GameManager::Instance();
-	gameManager->Initialization();
 	gameManager->Run();
 	GameManager::Destroy();
 
